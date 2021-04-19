@@ -70,13 +70,13 @@ func _set(property, value):
 		
 	if property == "geometry/visual_mesh":
 		var project_path = ProjectSettings.globalize_path("res://")
-		var object_path = $MeshInstance.get_mesh().resource_path # This line still throws an error, but it works
-		var absolute_object_path = project_path + object_path.substr(6,-1)
-		print("Set visual mesh to: " + absolute_object_path)
-		
-		visual_mesh = value
-		$MeshInstance.mesh = visual_mesh
-		property_list_changed_notify()
+		if get_child_count() != 0:
+			var object_path = $MeshInstance.get_mesh().resource_path # This line still throws an error, but it works
+			var absolute_object_path = project_path + object_path.substr(6,-1)
+			print("Set visual mesh to: " + absolute_object_path)
+			visual_mesh = value
+			$MeshInstance.mesh = visual_mesh
+			property_list_changed_notify()
 		
 	return true
 
