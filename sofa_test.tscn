@@ -18,23 +18,23 @@ mechanical/physics_object_properties/movable = true
 mechanical/physics_object_properties/mass = 1.0
 mechanical/physics_object_properties/soft_body = false
 
-[node name="NoteASofaObject" type="Spatial" parent="SofaObject"]
+[node name="NotASofaObject" type="Spatial" parent="SofaObject"]
 
-[node name="NoteASofaObject2" type="Spatial" parent="SofaObject/NoteASofaObject"]
+[node name="NoteASofaObject2" type="Spatial" parent="SofaObject/NotASofaObject"]
 
-[node name="NoteASofaObject3" type="Spatial" parent="SofaObject/NoteASofaObject"]
+[node name="NoteASofaObject3" type="Spatial" parent="SofaObject/NotASofaObject"]
 
-[node name="NoteASofaObject4" type="Spatial" parent="SofaObject/NoteASofaObject/NoteASofaObject3"]
+[node name="NoteASofaObject4" type="Spatial" parent="SofaObject/NotASofaObject/NoteASofaObject3"]
 
-[node name="NoteASofaObject4" type="Spatial" parent="SofaObject/NoteASofaObject"]
+[node name="NoteASofaObject4" type="Spatial" parent="SofaObject/NotASofaObject"]
 
-[node name="NoteASofaObject4" type="Spatial" parent="SofaObject/NoteASofaObject/NoteASofaObject4"]
+[node name="NoteASofaObject4" type="Spatial" parent="SofaObject/NotASofaObject/NoteASofaObject4"]
 
-[node name="NoteASofaObject5" type="Spatial" parent="SofaObject/NoteASofaObject/NoteASofaObject4"]
+[node name="NoteASofaObject5" type="Spatial" parent="SofaObject/NotASofaObject/NoteASofaObject4"]
 
-[node name="NoteASofaObject7" type="Spatial" parent="SofaObject/NoteASofaObject/NoteASofaObject4/NoteASofaObject5"]
+[node name="NoteASofaObject7" type="Spatial" parent="SofaObject/NotASofaObject/NoteASofaObject4/NoteASofaObject5"]
 
-[node name="NoteASofaObject6" type="Spatial" parent="SofaObject/NoteASofaObject/NoteASofaObject4"]
+[node name="NoteASofaObject6" type="Spatial" parent="SofaObject/NotASofaObject/NoteASofaObject4"]
 
 [node name="SofaAABoxROI" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.78925, 0.592928, -1.43068 )

@@ -49,6 +49,8 @@ func explore_subtree(obj, prepends=[""], depth=0):
 				prepend[-1] = "├"
 		if(is_sofa_component):
 			print("[✔] " + prepend + child.get_name() + "")
+			if(child.has_method("get_xml")):
+				child.get_xml()
 		else:
 			print("[✘] " + prepend + child.get_name() + " (IGNORE)") 
 
@@ -59,20 +61,32 @@ func explore_subtree(obj, prepends=[""], depth=0):
 #[✔] - U+2714
 #[✘] - U+2718
 func _ready():
-	assert(get_tree().get_root().get_children().size() != 0, "Error, you must have at least one root node.") #This can never happen :P
-	assert(get_tree().get_root().get_children().size() == 1, "Error, there are multiple objects in the root, make sure you only have one.") #This may never happen?
-	print(typeof(get_tree().get_root().get_children()[0]))
-	assert(get_tree().get_root().get_children()[0].has_method("is_root"), "Error, the root node does not have a the required Sofa root node script.")
-	assert(get_tree().get_root().get_children()[0].is_root() == true, "Error, the root node doesn't believe it is a root node.") #This should never happen.
-	print("Checking tree (root)...")
-	print("[✔] Successfully checked the presence of the root node: All OK")
-	print("Checking tree (children)...")
-	
-	explore_subtree(get_tree().get_root())
-	var my_tree = XMLSceneTree.new()
-	my_tree.add_property("name", "my_doodle")
-	my_tree.add_child()
-	#my_tree
-	print(my_tree.to_xml())
-	
-	print("I am a super cool thing!")
+	if not Engine.is_editor_hint():
+		print("Checking tree (root)...")
+		assert(get_tree().get_root().get_children().size() != 0, "Error, you must have at least one root node.") #This can never happen :P
+		assert(get_tree().get_root().get_children().size() == 1, "Error, there are multiple objects in the root, make sure you only have one.") #This may never happen?
+		assert(get_tree().get_root().get_children()[0].has_method("is_root"), "Error, the root node does not have a the required Sofa root node script.")
+		assert(get_tree().get_root().get_children()[0].is_root() == true, "Error, the root node doesn't believe it is a root node.") #This should never happen.
+
+		print("[✔] Successfully checked the presence of the root node: All OK")
+		print("Checking tree (children)...")
+		
+		explore_subtree(get_tree().get_root())
+		
+		var my_tree = XMLSceneTree.new()
+		my_tree.get_root().add_properties({"name":"root", "dt":"0.02", "gravity":"0 -9.81 0"})
+		my_tree.add_property(my_tree.get_root(), "name", "root")
+		my_tree.add_property(my_tree.get_root(), "dt", 0.02)
+		
+		my_tree.add_child(my_tree.get_root(), "RequiredPlugin").add_property("name", "SofaOpenglVisual")
+		my_tree.add_child(my_tree.get_root(), "RequiredPlugin").add_property("name", "SofaBoundaryCondition")
+		my_tree.add_child(my_tree.get_root(), "RequiredPlugin").add_property("name", "SofaGeneralSimpleFem")
+		
+		my_tree.add_child(my_tree.get_root(), "DefaultPipeline").add_properties({"name":"CollisionPipeline", "verbose":"0"})
+		my_tree.add_child(my_tree.get_root(), "BruteForceDetection").add_properties({"name":"N2"})
+		my_tree.add_child(my_tree.get_root(), "DefaultContactManager").add_properties({"name":"collision response", "response":"default"})
+		
+		#my_tree
+		print(my_tree.to_xml())
+		
+		print("I am a super cool thing!")

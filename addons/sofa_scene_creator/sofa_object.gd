@@ -1,6 +1,6 @@
 tool
 extends Spatial
-
+const XMLSceneTree = preload("res://addons/sofa_scene_creator/xml_scene_tree.gd")
 
 export(Array, NodePath) var fixed_constraints
 
@@ -20,9 +20,9 @@ var material = SpatialMaterial.new()
 #export (SpatialMaterial) var material = SpatialMaterial.new()
 
 func _enter_tree():
-	var preview_visual_mesh = MeshInstance.new()
-	preview_visual_mesh.mesh = visual_mesh
-	add_child(preview_visual_mesh)
+	#var preview_visual_mesh = MeshInstance.new()
+	#preview_visual_mesh.mesh = visual_mesh
+	#add_child(preview_visual_mesh)
 	
 	print("Sofa Object Entered Tree.")
 
@@ -69,16 +69,17 @@ func _set(property, value):
 		cutable = value
 		
 	if property == "geometry/visual_mesh":
-		var project_path = ProjectSettings.globalize_path("res://")
-		if get_child_count() != 0:
-			var object_path = $MeshInstance.get_mesh().resource_path # This line still throws an error, but it works
-			var absolute_object_path = project_path + object_path.substr(6,-1)
-			print("Set visual mesh to: " + absolute_object_path)
-			visual_mesh = value
+		visual_mesh = value
+		if get_child_count() == 0:
+			var preview_visual_mesh = MeshInstance.new()
+			preview_visual_mesh.mesh = visual_mesh
+			add_child(preview_visual_mesh)
+		else:
 			$MeshInstance.mesh = visual_mesh
-			property_list_changed_notify()
 		
 	return true
+
+
 
 # call once when node selected 
 func _get_property_list():
@@ -87,7 +88,7 @@ func _get_property_list():
 	property_list.append({
 		"hint": PROPERTY_HINT_RESOURCE_TYPE,
 		"hint_string" : "Mesh", #Hint that the selection will only allow meshes
-		"usage": PROPERTY_USAGE_DEFAULT,
+		"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
 		"name": "geometry/visual_mesh",
 		"type": TYPE_OBJECT
 	})
@@ -141,7 +142,39 @@ func _get_property_list():
 			})
 	return property_list
 
+func get_path_to_visual_mesh():
+	var project_path = ProjectSettings.globalize_path("res://")
+	if get_child_count() != 0:
+		var object_path = visual_mesh.resource_path # This line still throws an error, but it works
+		var absolute_object_path = project_path + object_path.substr(6,-1)
+		return absolute_object_path
 
+func get_xml():
+	var xml_tree = XMLSceneTree.new()
+	var r = xml_tree.get_root()
+	r.add_property("name", self.name)
+	r.add_child("EulerImplicitSolver").add_properties({"rayleighStiffness":"0.01", "rayleighMass":"0.1"})
+	r.add_child("CGLinearSolver").add_properties({"iterations":25, "threshold":0.00000001, "tolerance":1e-05})
+	r.add_child("MechanicalObject").add_properties({"template":"Rigid3d", "scale":1.0})
+	r.add_child("UniformMass")
+	var vis = r.add_child("Node").add_properties({"name":"Visual"})
+	#<MeshObjLoader name="meshVisualLoader" filename="mesh/torus.obj"/>
+	#<OglModel name="Visual" src="@meshVisualLoader" color="gray" scale="1.0"/>
+	#<RigidMapping input="@.." output="@Visual"/>
+	vis.add_child("MeshObjLoader").add_properties({"name":"VisualMeshLoader", "filename":get_path_to_visual_mesh()})
+	vis.add_child("OglModel").add_properties({"name":"VisualModel", "src":"@VisualMeshLoader", "scale":1.0})
+	vis.add_child("RigidMapping").add_properties({"input":"@..", "output":"@VisualModel"})
+	
+	var col = r.add_child("Node").add_properties({"name":"Collision"})
+	col.add_child("MeshObjLoader").add_properties({"name":"CollisionMeshLoader", "filename":get_path_to_visual_mesh()})
+	col.add_child("MeshTopology").add_properties({"src":"@CollisionMeshLoader"})
+	vis.add_child("MechanicalObject").add_properties({"scale":1.0})
+	
+	
+	
+	print(xml_tree.to_xml())
+	return r
+	
 
 #func _enter_tree():
 #	connect("pressed", self, "clicked")
