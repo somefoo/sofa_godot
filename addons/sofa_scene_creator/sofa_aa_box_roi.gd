@@ -12,6 +12,8 @@ func _enter_tree():
 	preview_visual_mesh.mesh = visual_mesh
 	add_child(preview_visual_mesh)
 
+func get_xml_tree():
+	return null #Ignore me!
 
 func _process(delta):
 	#print("lol")

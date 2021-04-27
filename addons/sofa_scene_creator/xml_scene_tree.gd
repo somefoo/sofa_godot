@@ -11,12 +11,16 @@ class XMLTreeNode:
 		_children.append(XMLTreeNode.new(child))
 		return _children[-1]
 	
+	func append(subtree):
+		if(subtree != null):
+			_children.append(subtree)
+	
 	func add_property(name, value):
-		_properties[name] = str(value)
+		_properties[name] = value
 		return self
 	func add_properties(properties):
 		for p in range(0, properties.size()):
-			_properties[properties.keys()[p]] = str(properties.values()[p])
+			_properties[properties.keys()[p]] = properties.values()[p]
 		return self
 
 var _root = null
@@ -50,15 +54,15 @@ func to_xml_from_node(node, depth = 0):
 		if typeof(property_value) in iter:
 			for i in property_value: property_string += str(i) + " "
 		elif typeof(property_value) == TYPE_VECTOR2:
-			property_value = property_value.x + " " + property_value.y
+			property_value = str(property_value.x) + " " + str(property_value.y)
 		elif typeof(property_value) == TYPE_VECTOR3:
-			property_value = property_value.x + " " + property_value.y + property_value.z
+			property_value = str(property_value.x) + " " + str(property_value.y) + " " + str(property_value.z)
 		elif typeof(property_value) in cnst:
-			property_value = str(cnst)
+			property_value = str(property_value)
 		else:
 			assert(false, "This property is currently not handled: " + str(property_value))
 			
-		properties_string += node._properties.keys()[p] + '="' + node._properties.values()[p] + '" '
+		properties_string += node._properties.keys()[p] + '="' + property_value + '" '
 
 
 	var xml_string = ''

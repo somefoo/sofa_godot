@@ -5,10 +5,17 @@ const XMLSceneTree = preload("res://addons/sofa_scene_creator/xml_scene_tree.gd"
 
 export(String) var scene_name = "SofaScene"
 export(Vector3) var gravity = Vector3(0,-9.81,0)
+export(String, FILE, GLOBAL) var sofa_binary_path = ""
+export(bool) var print_sofa_output = false
+export(bool) var print_xml_output = false
 export(float) var time_step = 0.02
 
 func _enter_tree():
-	pass
+	#Fix godot prinout limit:
+	if(Engine.is_editor_hint()):
+		ProjectSettings.set_setting("network/limits/debugger_stdout/max_chars_per_second", 2048*100)
+		ProjectSettings.set_setting("network/limits/debugger_stdout/max_messages_per_frame", 10*100)
+		ProjectSettings.save()
 
 func is_root():
 	return true
@@ -50,13 +57,62 @@ func explore_subtree(obj, prepends=[""], depth=0):
 		if(is_sofa_component):
 			print("[✔] " + prepend + child.get_name() + "")
 			if(child.has_method("get_xml")):
-				child.get_xml()
+				#child.get_xml()
+				pass
 		else:
 			print("[✘] " + prepend + child.get_name() + " (IGNORE)") 
 
 		var child_prepend = prepends.duplicate(true)
 		child_prepend.append(" │")
 		explore_subtree(child,child_prepend, depth + 1)
+
+
+
+func construct_xml_tree(obj, depth=0):
+	#print(obj.name)
+	var xml_tree = obj.get_xml_tree()
+	var valid_children = []
+	for child in obj.get_children():
+		if(typeof(child) != TYPE_OBJECT):
+			continue
+		if(child.get_name().find("@@") == 0):
+			continue
+		valid_children.append(child)
+	
+	for child_id in range(0, valid_children.size()):
+
+		var child = valid_children[child_id]
+		var is_sofa_component = is_sofa_node(child)
+
+		#if(is_sofa_component):
+		#	if(child.has_method("get_xml")):
+		#		child.get_xml()
+		#else:
+		#	continue
+
+		if(is_sofa_component):
+			var my_tree = xml_tree.get_root()
+			var child_tree = construct_xml_tree(child)
+			assert(my_tree != null) #I can't be null
+			if(child_tree != null): #But my child can be (wants to be ignored)
+				xml_tree.get_root().append(child_tree.get_root())
+	return xml_tree
+
+
+func get_xml_tree():
+	var my_tree = XMLSceneTree.new()
+	my_tree.get_root().add_properties({"name":"root", "dt":"0.02", "gravity":"0 -9.81 0"})
+	my_tree.add_property(my_tree.get_root(), "name", "root")
+	my_tree.add_property(my_tree.get_root(), "dt", 0.02)
+	
+	my_tree.add_child(my_tree.get_root(), "RequiredPlugin").add_property("name", "SofaOpenglVisual")
+	my_tree.add_child(my_tree.get_root(), "RequiredPlugin").add_property("name", "SofaBoundaryCondition")
+	my_tree.add_child(my_tree.get_root(), "RequiredPlugin").add_property("name", "SofaGeneralSimpleFem")
+	
+	my_tree.add_child(my_tree.get_root(), "DefaultPipeline").add_properties({"name":"CollisionPipeline", "verbose":"0"})
+	my_tree.add_child(my_tree.get_root(), "BruteForceDetection").add_properties({"name":"N2"})
+	my_tree.add_child(my_tree.get_root(), "DefaultContactManager").add_properties({"name":"collision response", "response":"default"})
+	return my_tree
 
 #[✔] - U+2714
 #[✘] - U+2718
@@ -73,6 +129,8 @@ func _ready():
 		
 		explore_subtree(get_tree().get_root())
 		
+		#Use this as a new basis!
+		#file:///home/pit/repos/sofa/src/examples/Components/constraint/BilateralInteractionConstraint.scn
 		var my_tree = XMLSceneTree.new()
 		my_tree.get_root().add_properties({"name":"root", "dt":"0.02", "gravity":"0 -9.81 0"})
 		my_tree.add_property(my_tree.get_root(), "name", "root")
@@ -87,6 +145,29 @@ func _ready():
 		my_tree.add_child(my_tree.get_root(), "DefaultContactManager").add_properties({"name":"collision response", "response":"default"})
 		
 		#my_tree
-		print(my_tree.to_xml())
+		#print(my_tree.to_xml())
+		var xml_string = construct_xml_tree(self).to_xml()
+		if(print_xml_output):
+			print(xml_string)
+		var file = File.new()
+		file.open("/tmp/generated_sofa_scene.scn", File.WRITE)
+		file.store_string(xml_string)
+		file.close()
 		
-		print("I am a super cool thing!")
+		
+		var sofa_binary = File.new()
+		if(sofa_binary.file_exists(sofa_binary_path)):
+			var output = []
+			#Blocking call:
+			var pid = OS.execute(sofa_binary_path, ['/tmp/generated_sofa_scene.scn'], true, output)
+			if(print_sofa_output):
+				print("########## SOFA OUTPUT BEGIN ##########")
+				for line in output:
+					print(line)
+				print("########## SOFA OUTPUT END   ##########")
+			
+		else:
+			print("Sofa path not set correctly, sofa will not be opened.")
+			print("  Set the sofa binary path in the root node.")
+		
+		get_tree().quit()

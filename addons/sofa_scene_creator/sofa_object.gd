@@ -96,14 +96,14 @@ func _get_property_list():
 	
 	property_list.append({
 		"hint": PROPERTY_HINT_NONE,
-		"usage": PROPERTY_USAGE_DEFAULT,
+		"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
 		"name": "mechanical/cutable",
 		"type": TYPE_BOOL
 	})
 	
 	property_list.append({
 		"hint": PROPERTY_HINT_NONE,
-		"usage": PROPERTY_USAGE_DEFAULT,
+		"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
 		"name": "mechanical/physics_object",
 		"type": TYPE_BOOL
 	})
@@ -111,32 +111,32 @@ func _get_property_list():
 	if physics_object==true:
 		property_list.append({
 			"hint": PROPERTY_HINT_NONE,
-			"usage": PROPERTY_USAGE_DEFAULT,
+			"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
 			"name": "mechanical/physics_object_properties/movable",
 			"type": TYPE_BOOL
 		})
 		property_list.append({
 			"hint": PROPERTY_HINT_NONE,
-			"usage": PROPERTY_USAGE_DEFAULT,
+			"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
 			"name": "mechanical/physics_object_properties/mass",
 			"type": TYPE_REAL
 		})
 		property_list.append({
 			"hint": PROPERTY_HINT_NONE,
-			"usage": PROPERTY_USAGE_DEFAULT,
+			"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
 			"name": "mechanical/physics_object_properties/soft_body",
 			"type": TYPE_BOOL
 		})
 		if soft_body==true:
 			property_list.append({
 				"hint": PROPERTY_HINT_NONE,
-				"usage": PROPERTY_USAGE_DEFAULT,
+				"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
 				"name": "mechanical/physics_object_properties/soft_body_properties/poisson_ratio",
 				"type": TYPE_REAL
 			})
 			property_list.append({
 				"hint": PROPERTY_HINT_NONE,
-				"usage": PROPERTY_USAGE_DEFAULT,
+				"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
 				"name": "mechanical/physics_object_properties/soft_body_properties/youngs_modulus",
 				"type": TYPE_REAL
 			})
@@ -149,7 +149,7 @@ func get_path_to_visual_mesh():
 		var absolute_object_path = project_path + object_path.substr(6,-1)
 		return absolute_object_path
 
-func get_xml():
+func get_xml_tree():
 	var xml_tree = XMLSceneTree.new()
 	var r = xml_tree.get_root()
 	r.add_property("name", self.name)
@@ -157,24 +157,24 @@ func get_xml():
 	r.add_child("CGLinearSolver").add_properties({"iterations":25, "threshold":0.00000001, "tolerance":1e-05})
 	r.add_child("MechanicalObject").add_properties({"template":"Rigid3d", "scale":1.0})
 	r.add_child("UniformMass")
+	
+	if(not movable):
+		r.add_child("FixedConstraint").add_properties({"name":"FixedConstraint", "fixAll":true})
+	
+	
 	var vis = r.add_child("Node").add_properties({"name":"Visual"})
 	#<MeshObjLoader name="meshVisualLoader" filename="mesh/torus.obj"/>
 	#<OglModel name="Visual" src="@meshVisualLoader" color="gray" scale="1.0"/>
 	#<RigidMapping input="@.." output="@Visual"/>
-	vis.add_child("MeshObjLoader").add_properties({"name":"VisualMeshLoader", "filename":get_path_to_visual_mesh()})
+	vis.add_child("MeshObjLoader").add_properties({"name":"VisualMeshLoader", "filename":get_path_to_visual_mesh(), "scale3d":scale, "rotation":rotation_degrees, "translation":translation})
 	vis.add_child("OglModel").add_properties({"name":"VisualModel", "src":"@VisualMeshLoader", "scale":1.0})
 	vis.add_child("RigidMapping").add_properties({"input":"@..", "output":"@VisualModel"})
 	
 	var col = r.add_child("Node").add_properties({"name":"Collision"})
-	col.add_child("MeshObjLoader").add_properties({"name":"CollisionMeshLoader", "filename":get_path_to_visual_mesh()})
+	col.add_child("MeshObjLoader").add_properties({"name":"CollisionMeshLoader", "filename":get_path_to_visual_mesh(), "scale3d":scale, "rotation":rotation_degrees, "translation":translation})
 	col.add_child("MeshTopology").add_properties({"src":"@CollisionMeshLoader"})
-	vis.add_child("MechanicalObject").add_properties({"scale":1.0})
-	
-	
-	
-	print(xml_tree.to_xml())
-	return r
-	
+	col.add_child("MechanicalObject").add_properties({"scale":1.0})
+	return xml_tree
 
 #func _enter_tree():
 #	connect("pressed", self, "clicked")

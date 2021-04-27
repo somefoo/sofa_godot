@@ -3,18 +3,19 @@
 [ext_resource path="res://addons/sofa_scene_creator/sofa_aa_box_roi.gd" type="Script" id=1]
 [ext_resource path="res://addons/sofa_scene_creator/sofa_object.gd" type="Script" id=2]
 [ext_resource path="res://addons/sofa_scene_creator/sofa_root.gd" type="Script" id=3]
-
-[sub_resource type="CubeMesh" id=1]
+[ext_resource path="res://rope_holder.obj" type="ArrayMesh" id=4]
 
 [node name="SofaRoot" type="Node"]
 script = ExtResource( 3 )
+sofa_binary_path = "/home/pit/repos/sofa/build/v2006/bin/runSofa"
 
 [node name="SofaObject" type="Spatial" parent="."]
+transform = Transform( 24.2599, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
 script = ExtResource( 2 )
-geometry/visual_mesh = SubResource( 1 )
+geometry/visual_mesh = ExtResource( 4 )
 mechanical/cutable = false
 mechanical/physics_object = true
-mechanical/physics_object_properties/movable = true
+mechanical/physics_object_properties/movable = false
 mechanical/physics_object_properties/mass = 1.0
 mechanical/physics_object_properties/soft_body = false
 
@@ -35,6 +36,16 @@ mechanical/physics_object_properties/soft_body = false
 [node name="NoteASofaObject7" type="Spatial" parent="SofaObject/NotASofaObject/NoteASofaObject4/NoteASofaObject5"]
 
 [node name="NoteASofaObject6" type="Spatial" parent="SofaObject/NotASofaObject/NoteASofaObject4"]
+
+[node name="SofaObject2" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.982408, -0.186747, 0, 0.186747, 0.982408, 0, 2.35458, 0 )
+script = ExtResource( 2 )
+geometry/visual_mesh = ExtResource( 4 )
+mechanical/cutable = false
+mechanical/physics_object = true
+mechanical/physics_object_properties/movable = true
+mechanical/physics_object_properties/mass = 1.0
+mechanical/physics_object_properties/soft_body = false
 
 [node name="SofaAABoxROI" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.78925, 0.592928, -1.43068 )

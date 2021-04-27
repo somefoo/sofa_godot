@@ -23,6 +23,11 @@ config/icon="res://icon.png"
 
 enabled=PoolStringArray( "godot-plugin-refresher", "sofa_scene_creator" )
 
+[network]
+
+limits/debugger_stdout/max_chars_per_second=204800
+limits/debugger_stdout/max_messages_per_frame=1000
+
 [rendering]
 
 environment/default_environment="res://default_env.tres"
