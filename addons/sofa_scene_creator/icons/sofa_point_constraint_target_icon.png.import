@@ -1,0 +1,34 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/sofa_point_constraint_target_icon.png-fcbad7d0f2578fc2f7a2591bd12925ac.stex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://addons/sofa_scene_creator/icons/sofa_point_constraint_target_icon.png"
+dest_files=[ "res://.import/sofa_point_constraint_target_icon.png-fcbad7d0f2578fc2f7a2591bd12925ac.stex" ]
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/bptc_ldr=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=true
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+process/invert_color=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0

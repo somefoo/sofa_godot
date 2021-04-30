@@ -1,0 +1,25 @@
+tool
+extends Spatial 
+
+var visual_mesh : Mesh = SphereMesh.new()
+var material = SpatialMaterial.new()
+
+func _enter_tree():
+	material.flags_transparent = true
+	material.albedo_color = Color(1.0,1.0,0,0.5)
+	var preview_visual_mesh = MeshInstance.new()
+	visual_mesh.material = material
+	preview_visual_mesh.mesh = visual_mesh
+	add_child(preview_visual_mesh)
+
+func get_xml_tree():
+	return null #Ignore me!
+
+func _process(delta):
+	#print("lol")
+	#set_transform(Transform(Vector3(0,0,0), Vector3(0,0,0)))
+	#set_transform(Transform(Quat(0,0,0,0)))
+	rotation_degrees = Vector3(0,0,0)
+	scale = Vector3(0.1,0.1,0.1)
+	#global_transform.origin = Vector3(1,1,1)
+	pass

@@ -16,10 +16,50 @@ func _enter_tree():
 		ProjectSettings.set_setting("network/limits/debugger_stdout/max_chars_per_second", 2048*100)
 		ProjectSettings.set_setting("network/limits/debugger_stdout/max_messages_per_frame", 10*100)
 		ProjectSettings.save()
+	
+	
+# This function returns the xml root tree (the most top-level xml node)
+func get_xml_tree():
+	# Use this as a new basis!
+	# file:///home/pit/repos/sofa/src/examples/Components/constraint/BilateralInteractionConstraint.scn
+	var root_tree = XMLSceneTree.new()
+	root_tree.get_root().add_properties({"name":"root", "dt":"0.02", "gravity":"0 -9.81 0"})
+	root_tree.add_property(root_tree.get_root(), "name", "root")
+	root_tree.add_property(root_tree.get_root(), "dt", 0.02)
+	
+	# TODO Which ones do we really need? We could just load all
+	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaOpenglVisual")
+	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaBoundaryCondition")
+	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaGeneralSimpleFem")
+	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaMiscCollision")
+	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaLoader")
+	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaConstraint")
+	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaImplicitOdeSolver")
+	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaRigid")
+	
+	root_tree.add_child(root_tree.get_root(), "FreeMotionAnimationLoop")
+	root_tree.add_child(root_tree.get_root(), "GenericConstraintSolver").add_properties({"tolerance":0.001, "maxIterations":1000})
+	root_tree.add_child(root_tree.get_root(), "DefaultPipeline").add_properties({"name":"CollisionPipeline", "verbose":"0"})
+	root_tree.add_child(root_tree.get_root(), "BruteForceDetection").add_properties({"name":"N2"})
+	root_tree.add_child(root_tree.get_root(), "LocalMinDistance").add_properties({"name":"Proximity", "alarmDistance":0.2, "contactDistance":0.09, "angleCone":0.0})
+	root_tree.add_child(root_tree.get_root(), "DefaultContactManager").add_properties({"name":"Response", "response":"FrictionContact"})
+	root_tree.add_child(root_tree.get_root(), "DefaultCollisionGroupManager").add_properties({"name":"Group"})
+	
+	
+	
+	#root_tree.add_child(root_tree.get_root(), "DefaultPipeline").add_properties({"name":"CollisionPipeline", "verbose":"0"})
+	#root_tree.add_child(root_tree.get_root(), "BruteForceDetection").add_properties({"name":"N2"})
+	#root_tree.add_child(root_tree.get_root(), "DefaultContactManager").add_properties({"name":"collision response", "response":"default"})
+	return root_tree
 
+# Returns true, as this is the root object
+# TODO This isn't really needed for actual functions
+# But is used for asserts (maybe we can remove this)
 func is_root():
 	return true
 
+# Utility function: Returns true  if an object is a sofa object
+#					Returns false if an object is not a sofa object
 func is_sofa_node(obj):
 	var is_sofa_component = true
 	if(obj.get_script() == null):
@@ -28,7 +68,8 @@ func is_sofa_node(obj):
 		is_sofa_component = false
 	return is_sofa_component
 
-#http://shapecatcher.com/unicode/block/Box_Drawing
+# A utility function used to print the scene tree
+# it is mostly for debugging scenes during development
 func explore_subtree(obj, prepends=[""], depth=0):
 	var valid_children = []
 	for child in obj.get_children():
@@ -67,7 +108,9 @@ func explore_subtree(obj, prepends=[""], depth=0):
 		explore_subtree(child,child_prepend, depth + 1)
 
 
-
+# This function creates the actual XML tree out of the
+# currently loaded scene. The returned object can then
+# be stringified into an XML file.
 func construct_xml_tree(obj, depth=0):
 	#print(obj.name)
 	var xml_tree = obj.get_xml_tree()
@@ -84,12 +127,6 @@ func construct_xml_tree(obj, depth=0):
 		var child = valid_children[child_id]
 		var is_sofa_component = is_sofa_node(child)
 
-		#if(is_sofa_component):
-		#	if(child.has_method("get_xml")):
-		#		child.get_xml()
-		#else:
-		#	continue
-
 		if(is_sofa_component):
 			var my_tree = xml_tree.get_root()
 			var child_tree = construct_xml_tree(child)
@@ -99,20 +136,7 @@ func construct_xml_tree(obj, depth=0):
 	return xml_tree
 
 
-func get_xml_tree():
-	var my_tree = XMLSceneTree.new()
-	my_tree.get_root().add_properties({"name":"root", "dt":"0.02", "gravity":"0 -9.81 0"})
-	my_tree.add_property(my_tree.get_root(), "name", "root")
-	my_tree.add_property(my_tree.get_root(), "dt", 0.02)
-	
-	my_tree.add_child(my_tree.get_root(), "RequiredPlugin").add_property("name", "SofaOpenglVisual")
-	my_tree.add_child(my_tree.get_root(), "RequiredPlugin").add_property("name", "SofaBoundaryCondition")
-	my_tree.add_child(my_tree.get_root(), "RequiredPlugin").add_property("name", "SofaGeneralSimpleFem")
-	
-	my_tree.add_child(my_tree.get_root(), "DefaultPipeline").add_properties({"name":"CollisionPipeline", "verbose":"0"})
-	my_tree.add_child(my_tree.get_root(), "BruteForceDetection").add_properties({"name":"N2"})
-	my_tree.add_child(my_tree.get_root(), "DefaultContactManager").add_properties({"name":"collision response", "response":"default"})
-	return my_tree
+
 
 #[✔] - U+2714
 #[✘] - U+2718
@@ -129,20 +153,9 @@ func _ready():
 		
 		explore_subtree(get_tree().get_root())
 		
-		#Use this as a new basis!
-		#file:///home/pit/repos/sofa/src/examples/Components/constraint/BilateralInteractionConstraint.scn
-		var my_tree = XMLSceneTree.new()
-		my_tree.get_root().add_properties({"name":"root", "dt":"0.02", "gravity":"0 -9.81 0"})
-		my_tree.add_property(my_tree.get_root(), "name", "root")
-		my_tree.add_property(my_tree.get_root(), "dt", 0.02)
+
 		
-		my_tree.add_child(my_tree.get_root(), "RequiredPlugin").add_property("name", "SofaOpenglVisual")
-		my_tree.add_child(my_tree.get_root(), "RequiredPlugin").add_property("name", "SofaBoundaryCondition")
-		my_tree.add_child(my_tree.get_root(), "RequiredPlugin").add_property("name", "SofaGeneralSimpleFem")
 		
-		my_tree.add_child(my_tree.get_root(), "DefaultPipeline").add_properties({"name":"CollisionPipeline", "verbose":"0"})
-		my_tree.add_child(my_tree.get_root(), "BruteForceDetection").add_properties({"name":"N2"})
-		my_tree.add_child(my_tree.get_root(), "DefaultContactManager").add_properties({"name":"collision response", "response":"default"})
 		
 		#my_tree
 		#print(my_tree.to_xml())
