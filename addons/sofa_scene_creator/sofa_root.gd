@@ -6,7 +6,10 @@ const XMLSceneTree = preload("res://addons/sofa_scene_creator/xml_scene_tree.gd"
 export(String) var scene_name = "SofaScene"
 export(Vector3) var gravity = Vector3(0,-9.81,0)
 export(String, FILE, GLOBAL) var sofa_binary_path = ""
+export(String, FILE, GLOBAL) var gmsh_binary_path = ""
+export(String, FILE, GLOBAL) var ctmconv_binary_path = ""
 export(bool) var print_sofa_output = false
+export(bool) var print_gmsh_output = false
 export(bool) var print_xml_output = false
 export(float) var time_step = 0.02
 
@@ -36,14 +39,17 @@ func get_xml_tree():
 	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaConstraint")
 	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaImplicitOdeSolver")
 	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaRigid")
+	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaCarving")
 	
+	
+	root_tree.add_child(root_tree.get_root(), "DefaultPipeline").add_properties({"name":"CollisionPipeline", "verbose":"0", "depth":"6"})
+	root_tree.add_child(root_tree.get_root(), "DefaultCollisionGroupManager")
+	root_tree.add_child(root_tree.get_root(), "DefaultContactManager").add_properties({"name":"Response", "response":"default"})
+	root_tree.add_child(root_tree.get_root(), "NewProximityIntersection").add_properties({"alarmDistance":"1", "contactDistance":"0.5"})
 	root_tree.add_child(root_tree.get_root(), "FreeMotionAnimationLoop")
-	root_tree.add_child(root_tree.get_root(), "GenericConstraintSolver").add_properties({"tolerance":0.001, "maxIterations":1000})
-	root_tree.add_child(root_tree.get_root(), "DefaultPipeline").add_properties({"name":"CollisionPipeline", "verbose":"0"})
 	root_tree.add_child(root_tree.get_root(), "BruteForceDetection").add_properties({"name":"N2"})
-	root_tree.add_child(root_tree.get_root(), "LocalMinDistance").add_properties({"name":"Proximity", "alarmDistance":0.2, "contactDistance":0.09, "angleCone":0.0})
-	root_tree.add_child(root_tree.get_root(), "DefaultContactManager").add_properties({"name":"Response", "response":"FrictionContact"})
-	root_tree.add_child(root_tree.get_root(), "DefaultCollisionGroupManager").add_properties({"name":"Group"})
+	root_tree.add_child(root_tree.get_root(), "GenericConstraintSolver").add_properties({"tolerance":0.001, "maxIterations":1000})
+	
 	
 	
 	

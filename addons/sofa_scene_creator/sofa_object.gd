@@ -3,15 +3,16 @@ extends Spatial
 const XMLSceneTree = preload("res://addons/sofa_scene_creator/xml_scene_tree.gd")
 
 export(Array, NodePath) var fixed_constraints
+export(Array, NodePath) var bidirectional_attach_constraints
 
 var physics_object : bool = true
 var movable : bool = true
 var mass : float = 1.0
 
 var soft_body : bool = false
-var soft_body_poisson_ratio : float = 0.3
-var soft_body_youngs_modulus : float = 18000.0
-var gmsh_file = ""
+var soft_body_poisson_ratio : float = 0.4
+var soft_body_youngs_modulus : float = 10000.0
+#var gmsh_file = ""
 
 var cutable : bool = false
 
@@ -38,8 +39,8 @@ func _get(property):
 		
 	if property == "mechanical/physics_object_properties/soft_body":
 		return soft_body
-	if property == "mechanical/physics_object_properties/soft_body_properties/gmsh_file":
-		return gmsh_file
+#	if property == "mechanical/physics_object_properties/soft_body_properties/gmsh_file":
+#		return gmsh_file
 	if property == "mechanical/physics_object_properties/soft_body_properties/poisson_ratio":
 		return soft_body_poisson_ratio
 	if property == "mechanical/physics_object_properties/soft_body_properties/youngs_modulus":
@@ -67,8 +68,8 @@ func _set(property, value):
 		soft_body_poisson_ratio = value
 	if property == "mechanical/physics_object_properties/soft_body_properties/youngs_modulus":
 		soft_body_youngs_modulus = value
-	if property == "mechanical/physics_object_properties/soft_body_properties/gmsh_file":
-		gmsh_file = value
+#	if property == "mechanical/physics_object_properties/soft_body_properties/gmsh_file":
+#		gmsh_file = value
 		
 	if property == "mechanical/cutable":
 		cutable = value
@@ -133,13 +134,13 @@ func _get_property_list():
 			"type": TYPE_BOOL
 		})
 		if soft_body==true:
-			property_list.append({
-				"hint": PROPERTY_HINT_FILE,
-				"hint_string" : "*.gmsh, *.msh",
-				"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
-				"name": "mechanical/physics_object_properties/soft_body_properties/gmsh_file",
-				"type": TYPE_STRING
-			})
+#			property_list.append({
+#				"hint": PROPERTY_HINT_FILE,
+#				"hint_string" : "*.gmsh, *.msh",
+#				"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
+#				"name": "mechanical/physics_object_properties/soft_body_properties/gmsh_file",
+#				"type": TYPE_STRING
+#			})
 			property_list.append({
 				"hint": PROPERTY_HINT_NONE,
 				"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
@@ -161,11 +162,81 @@ func get_path_to_visual_mesh():
 		var absolute_object_path = project_path + object_path.substr(6,-1)
 		return absolute_object_path
 func get_path_to_gmsh_mesh():
-	var project_path = ProjectSettings.globalize_path("res://")
-	if get_child_count() != 0:
-		var object_path = gmsh_file # This line still throws an error, but it works
-		var absolute_object_path = project_path + object_path.substr(6,-1)
-		return absolute_object_path
+	var path = get_path_to_visual_mesh()
+	return path.substr(0, len(path) -4) + '.msh'
+	
+	#var project_path = ProjectSettings.globalize_path("res://")
+	#if get_child_count() != 0:
+	#	var object_path = gmsh_file # This line still throws an error, but it works
+	#	var absolute_object_path = project_path + object_path.substr(6,-1)
+	#	return absolute_object_path
+func generate_gmsh_mesh():
+	var path = get_path_to_visual_mesh()
+	var export_path = get_path_to_gmsh_mesh()
+	
+	var date_test = File.new()
+	
+	if(date_test.file_exists(export_path)):
+		if(date_test.get_modified_time(path) < date_test.get_modified_time(export_path)):
+			print("Skipped Gmsh-Conversion (already newest)")
+			return
+	
+	var tmp_file = "/tmp/generated_gmsh_tmp.geo"
+	var tmp_3d_file = "/tmp/generated_stl.stl"
+	
+	if(path.substr(len(path) -4, -1) == ".obj"):
+		
+		
+		var ctmconv_binary = File.new()
+		if(ctmconv_binary.file_exists(get_tree().root.get_child(0).ctmconv_binary_path)):
+			var output = []
+			#Blocking call:
+			var pid = OS.execute(get_tree().root.get_child(0).ctmconv_binary_path, [path, tmp_3d_file], true, output)
+			if(get_tree().root.get_child(0).print_gmsh_output):
+				print("########## CTMCONV OUTPUT BEGIN ##########")
+				for line in output:
+					print(line)
+				print("########## CTMCONV OUTPUT END   ##########")
+
+		else:
+			print("ctmconv path not set correctly, meshes cannot be generated.")
+			print("  Set the ctmconv binary path in the root node.")
+			print("  [sudo apt install openctm-tools]")
+		
+		
+		
+		
+		
+		
+		var file = File.new()
+		file.open(tmp_file, File.WRITE)
+		var geo_string = ""
+		geo_string += "Merge " + '"' + tmp_3d_file + '"' + ";\n"
+		geo_string += 'Surface Loop(1) = {1};\n'
+		geo_string += 'Volume(1) = {1};\n'
+		file.store_string(geo_string)
+		file.close()
+		
+		
+		var gmsh_binary = File.new()
+		if(gmsh_binary.file_exists(get_tree().root.get_child(0).gmsh_binary_path)):
+			var output = []
+			#Blocking call:
+			var pid = OS.execute(get_tree().root.get_child(0).gmsh_binary_path, [tmp_file, '-3', '-o', export_path, '-format', '"msh22"'], true, output)
+			if(get_tree().root.get_child(0).print_gmsh_output):
+				print("########## GMSH OUTPUT BEGIN ##########")
+				for line in output:
+					print(line)
+				print("########## GMSH OUTPUT END   ##########")
+
+		else:
+			print("Gmsh path not set correctly, meshes cannot be generated.")
+			print("  Set the gmsh binary path in the root node.")
+			print("  [sudo apt install gmsh]")
+		
+		
+		print("yaay")
+		
 
 func add_rigid_body_subtree(r):
 	
@@ -198,7 +269,7 @@ func add_rigid_body_subtree(r):
 func add_soft_body_subtree(r):
 	# Use as reference: 
 	#~/repos/sofa/src/examples/Demos/caduceus.scn
-	
+	#https://www.pygimli.org/_examples_auto/index.html
 	#r.add_child("MeshGmshLoader").add_properties({"name":"GmshLoader", "filename":get_path_to_gmsh_mesh(), "scale3d":scale, "rotation":rotation_degrees, "translation":translation})
 	#r.add_child("TetrahedronSetTopologyContainer").add_properties({"name":"TopologyContainer", "src":"@GmshLoader"})
 	#r.add_child("MechanicalObject").add_properties({"name":"DOFS", "src":"@GmshLoader"})
@@ -212,7 +283,42 @@ func add_soft_body_subtree(r):
 	#vis.add_child("BarycentricMapping").add_properties({"name":"VisualMapping", "input":"@../DOFS", "output":"@VisualModel"})
 	
 	#var col = r.add_child("Node").add_properties({"name":"Collision"})
-	pass
+	#col.
+	
+	
+	# Generate gmsh file if the current visual mesh is newer than the gmsh
+	generate_gmsh_mesh()
+	
+	
+	
+	
+	r.add_child("EulerImplicitSolver").add_properties({"printLog":"false", "rayleighStiffness":"0.1", "rayleighMass":"0.1"})
+	r.add_child("CGLinearSolver").add_properties({"iterations":"10","tolerance":"1.0e-9","threshold":"1.0e-9"})
+	r.add_child("MeshGmshLoader").add_properties({"filename":get_path_to_gmsh_mesh(),"name":"loader", "scale3d":scale, "rotation":rotation_degrees, "translation":translation})
+	r.add_child("MechanicalObject").add_properties({"src":"@loader","name":"dofs"})
+#
+#	# addTetrahedronSetTopology
+	r.add_child("TetrahedronSetTopologyContainer").add_properties({"name":"Container","src":"@loader","tags":""})
+	r.add_child("TetrahedronSetTopologyModifier").add_properties({"name":"Modifier"})
+	r.add_child("TetrahedronSetGeometryAlgorithms").add_properties({"name":"GeomAlgo","template":"Vec3d"})
+
+	r.add_child("DiagonalMass").add_properties({"massDensity":"0.1"})
+	r.add_child("TetrahedronFEMForceField").add_properties({"youngModulus":soft_body_youngs_modulus,"poissonRatio":soft_body_poisson_ratio,"method":"large"})
+	r.add_child("UncoupledConstraintCorrection")
+
+
+	var t = r.add_child("Node").add_properties({"name":"Topo"})
+	# addTriangleSetTopology
+	t.add_child("TriangleSetTopologyContainer").add_properties({"name":"Container","src":"@","fileTopology":"","tags":""})
+	t.add_child("TriangleSetTopologyModifier").add_properties({"name":"Modifier"})
+	t.add_child("TriangleSetGeometryAlgorithms").add_properties({"name":"GeomAlgo","template":"Vec3d"})
+	t.add_child("Tetra2TriangleTopologicalMapping").add_properties({"input":"@../Container","output":"@Container"})
+	t.add_child("TriangleCollisionModel")
+
+	var v = t.add_child("Node").add_properties({"name":"Visual"})
+	v.add_child("OglModel").add_properties({"name":"VisualModel","color":"color"})
+	v.add_child("IdentityMapping").add_properties({"input":"@../../dofs","output":"@VisualModel"})
+	
 	
 func get_xml_tree():
 	var xml_tree = XMLSceneTree.new()
