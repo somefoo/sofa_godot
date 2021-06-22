@@ -203,11 +203,6 @@ func generate_gmsh_mesh():
 			print("  Set the ctmconv binary path in the root node.")
 			print("  [sudo apt install openctm-tools]")
 		
-		
-		
-		
-		
-		
 		var file = File.new()
 		file.open(tmp_file, File.WRITE)
 		var geo_string = ""
@@ -233,12 +228,11 @@ func generate_gmsh_mesh():
 			print("Gmsh path not set correctly, meshes cannot be generated.")
 			print("  Set the gmsh binary path in the root node.")
 			print("  [sudo apt install gmsh]")
-		
-		
-		print("yaay")
-		
 
 func add_rigid_body_subtree(r):
+	
+	r.add_child("EulerImplicitSolver").add_properties({"rayleighStiffness":"0.01", "rayleighMass":"0.1"})
+	r.add_child("CGLinearSolver").add_properties({"iterations":25, "threshold":0.00000001, "tolerance":1e-05})
 	
 	r.add_child("MechanicalObject").add_properties({"template":"Rigid3d", "scale":1.0})
 	r.add_child("UniformMass")
@@ -266,26 +260,9 @@ func add_rigid_body_subtree(r):
 	col.add_child("LineCollisionModel").add_properties({"contactStiffness":10})
 	col.add_child("PointCollisionModel").add_properties({"contactStiffness":10})
 	col.add_child("RigidMapping")
+
+
 func add_soft_body_subtree(r):
-	# Use as reference: 
-	#~/repos/sofa/src/examples/Demos/caduceus.scn
-	#https://www.pygimli.org/_examples_auto/index.html
-	#r.add_child("MeshGmshLoader").add_properties({"name":"GmshLoader", "filename":get_path_to_gmsh_mesh(), "scale3d":scale, "rotation":rotation_degrees, "translation":translation})
-	#r.add_child("TetrahedronSetTopologyContainer").add_properties({"name":"TopologyContainer", "src":"@GmshLoader"})
-	#r.add_child("MechanicalObject").add_properties({"name":"DOFS", "src":"@GmshLoader"})
-	#r.add_child("TetrahedronSetGeometryAlgorithms").add_properties({"name":"GeometricAlgorithms", "template":"Vec3d"})
-	# Skipped the DiagonalMass object
-	#r.add_child("TetrahedralCorotationalFEMForceField").add_properties({"name":"FEM", "template":"Vec3d", "method":"large", "possionRatio":soft_body_poisson_ratio, "youngModulus":soft_body_youngs_modulus, "computeGlobalMatrix":"0"})
-	
-	#var vis = r.add_child("Node").add_properties({"name":"Visual", "tags":"Visual"})
-	#vis.add_child("MeshObjLoader").add_properties({"name":"VisualMeshLoader", "filename":get_path_to_visual_mesh(), "scale3d":scale, "rotation":rotation_degrees, "translation":translation})
-	#vis.add_child("OglModel").add_properties({"name":"VisualModel", "src":"@VisualMeshLoader", "scale":1.0})
-	#vis.add_child("BarycentricMapping").add_properties({"name":"VisualMapping", "input":"@../DOFS", "output":"@VisualModel"})
-	
-	#var col = r.add_child("Node").add_properties({"name":"Collision"})
-	#col.
-	
-	
 	# Generate gmsh file if the current visual mesh is newer than the gmsh
 	generate_gmsh_mesh()
 	
@@ -302,7 +279,7 @@ func add_soft_body_subtree(r):
 	r.add_child("TetrahedronSetTopologyModifier").add_properties({"name":"Modifier"})
 	r.add_child("TetrahedronSetGeometryAlgorithms").add_properties({"name":"GeomAlgo","template":"Vec3d"})
 
-	r.add_child("DiagonalMass").add_properties({"massDensity":"0.1"})
+	r.add_child("DiagonalMass").add_properties({"massDensity":"10"})
 	r.add_child("TetrahedronFEMForceField").add_properties({"youngModulus":soft_body_youngs_modulus,"poissonRatio":soft_body_poisson_ratio,"method":"large"})
 	r.add_child("UncoupledConstraintCorrection")
 
@@ -324,8 +301,8 @@ func get_xml_tree():
 	var xml_tree = XMLSceneTree.new()
 	var r = xml_tree.get_root()
 	r.add_property("name", self.name)
-	r.add_child("EulerImplicitSolver").add_properties({"rayleighStiffness":"0.01", "rayleighMass":"0.1"})
-	r.add_child("CGLinearSolver").add_properties({"iterations":25, "threshold":0.00000001, "tolerance":1e-05})
+	#r.add_child("EulerImplicitSolver").add_properties({"rayleighStiffness":"0.01", "rayleighMass":"0.1"})
+	#r.add_child("CGLinearSolver").add_properties({"iterations":25, "threshold":0.00000001, "tolerance":1e-05})
 	
 	if(soft_body):
 		add_soft_body_subtree(r)

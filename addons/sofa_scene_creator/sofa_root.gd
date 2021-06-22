@@ -26,9 +26,9 @@ func get_xml_tree():
 	# Use this as a new basis!
 	# file:///home/pit/repos/sofa/src/examples/Components/constraint/BilateralInteractionConstraint.scn
 	var root_tree = XMLSceneTree.new()
-	root_tree.get_root().add_properties({"name":"root", "dt":"0.02", "gravity":"0 -9.81 0"})
-	root_tree.add_property(root_tree.get_root(), "name", "root")
-	root_tree.add_property(root_tree.get_root(), "dt", 0.02)
+	root_tree.get_root().add_properties({"name":get_name(), "dt":time_step, "gravity":gravity})
+	#root_tree.add_property(root_tree.get_root(), "name", "root")
+	#root_tree.add_property(root_tree.get_root(), "dt", 0.02)
 	
 	# TODO Which ones do we really need? We could just load all
 	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaOpenglVisual")
@@ -72,6 +72,8 @@ func is_sofa_node(obj):
 		is_sofa_component = false
 	elif (obj.get_script().get_path().split('/')[-1].find("sofa") != 0):
 		is_sofa_component = false
+	elif(obj.has_method("is_visible") && obj.is_visible() == false):
+		is_sofa_component = false
 	return is_sofa_component
 
 # A utility function used to print the scene tree
@@ -103,6 +105,7 @@ func explore_subtree(obj, prepends=[""], depth=0):
 				prepend[-1] = "├"
 		if(is_sofa_component):
 			print("[✔] " + prepend + child.get_name() + "")
+			get_sofa_absolute_name(child)
 			if(child.has_method("get_xml")):
 				#child.get_xml()
 				pass
@@ -113,6 +116,16 @@ func explore_subtree(obj, prepends=[""], depth=0):
 		child_prepend.append(" │")
 		explore_subtree(child,child_prepend, depth + 1)
 
+func get_sofa_absolute_name(obj):
+	var name = ""
+	if(is_sofa_node(obj)):
+		return "@/" + str(obj.get_path()).trim_prefix("/root/" + get_name() + "/")
+		#while(obj.get_parent() != null):
+		#	name = 
+	else:
+		print("Error, looking up sofa name of non-sofa object.")
+		get_tree().quit()
+	
 
 # This function creates the actual XML tree out of the
 # currently loaded scene. The returned object can then
