@@ -10,7 +10,6 @@ config_version=4
 
 _global_script_classes=[  ]
 _global_script_class_icons={
-
 }
 
 [application]
@@ -21,7 +20,7 @@ config/icon="res://icon.png"
 
 [editor_plugins]
 
-enabled=PoolStringArray( "godot-plugin-refresher", "sofa_scene_creator" )
+enabled=PoolStringArray( "res://addons/godot-plugin-refresher/plugin.cfg", "res://addons/sofa_scene_creator/plugin.cfg" )
 
 [network]
 

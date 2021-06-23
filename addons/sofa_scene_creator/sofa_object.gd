@@ -14,9 +14,12 @@ var soft_body_poisson_ratio : float = 0.4
 var soft_body_youngs_modulus : float = 10000.0
 #var gmsh_file = ""
 
+
+
 var cutable : bool = false
 
 var visual_mesh : Mesh = CubeMesh.new()
+var visual_color : Color = Color(0.5, 0.5, 0.5, 1)
 var material = SpatialMaterial.new()
 #onready var meshInstance = $Mesh
 #export (SpatialMaterial) var material = SpatialMaterial.new()
@@ -51,6 +54,8 @@ func _get(property):
 		
 	if property == "geometry/visual_mesh":
 		return visual_mesh
+	if property == "visual/color":
+		return visual_color
 
 func _set(property, value):
 	if property == "mechanical/physics_object":
@@ -76,12 +81,29 @@ func _set(property, value):
 		
 	if property == "geometry/visual_mesh":
 		visual_mesh = value
-		if get_child_count() == 0:
+		if get_node_or_null("MeshInstance") == null:
 			var preview_visual_mesh = MeshInstance.new()
 			preview_visual_mesh.mesh = visual_mesh
+			#preview_visual_mesh.set_surface_material(0, material)
+			preview_visual_mesh.set_surface_material(0, material)
 			add_child(preview_visual_mesh)
+			
+			
+		#if get_child_count() == 0:
+		#	var preview_visual_mesh = MeshInstance.new()
+		#	preview_visual_mesh.mesh = visual_mesh
+		#	add_child(preview_visual_mesh)
 		else:
 			$MeshInstance.mesh = visual_mesh
+			$MeshInstance.set_surface_material(0, material)
+		property_list_changed_notify()
+	if property == "visual/color":
+		visual_color = value
+		if get_node_or_null("MeshInstance") == null:
+			pass
+		else:
+			var material = $MeshInstance.get_surface_material(0)
+			material.albedo_color = visual_color
 		
 	return true
 
@@ -153,6 +175,13 @@ func _get_property_list():
 				"name": "mechanical/physics_object_properties/soft_body_properties/youngs_modulus",
 				"type": TYPE_REAL
 			})
+			
+	property_list.append({
+		"hint": PROPERTY_HINT_NONE,
+		"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
+		"name": "visual/color",
+		"type": TYPE_COLOR
+	})
 	return property_list
 
 func get_path_to_visual_mesh():
@@ -235,7 +264,7 @@ func add_rigid_body_subtree(r):
 	r.add_child("CGLinearSolver").add_properties({"iterations":25, "threshold":0.00000001, "tolerance":1e-05})
 	
 	r.add_child("MechanicalObject").add_properties({"template":"Rigid3d", "scale":1.0})
-	r.add_child("UniformMass")
+	r.add_child("UniformMass").add_properties({"totalMass":mass})
 	r.add_child("UncoupledConstraintCorrection")
 	
 	if(not movable):
@@ -248,7 +277,7 @@ func add_rigid_body_subtree(r):
 	#<OglModel name="Visual" src="@meshVisualLoader" color="gray" scale="1.0"/>
 	#<RigidMapping input="@.." output="@Visual"/>
 	vis.add_child("MeshObjLoader").add_properties({"name":"VisualMeshLoader", "filename":get_path_to_visual_mesh(), "scale3d":scale, "rotation":rotation_degrees, "translation":translation})
-	vis.add_child("OglModel").add_properties({"name":"VisualModel", "src":"@VisualMeshLoader", "scale":1.0})
+	vis.add_child("OglModel").add_properties({"name":"VisualModel", "src":"@VisualMeshLoader", "scale":1.0, "color":visual_color})
 	vis.add_child("RigidMapping").add_properties({"input":"@..", "output":"@VisualModel"})
 	
 	var col = r.add_child("Node").add_properties({"name":"Collision"})
@@ -279,7 +308,7 @@ func add_soft_body_subtree(r):
 	r.add_child("TetrahedronSetTopologyModifier").add_properties({"name":"Modifier"})
 	r.add_child("TetrahedronSetGeometryAlgorithms").add_properties({"name":"GeomAlgo","template":"Vec3d"})
 
-	r.add_child("DiagonalMass").add_properties({"massDensity":"10"})
+	r.add_child("UniformMass").add_properties({"totalMass":mass})
 	r.add_child("TetrahedronFEMForceField").add_properties({"youngModulus":soft_body_youngs_modulus,"poissonRatio":soft_body_poisson_ratio,"method":"large"})
 	r.add_child("UncoupledConstraintCorrection")
 
@@ -293,7 +322,7 @@ func add_soft_body_subtree(r):
 	t.add_child("TriangleCollisionModel")
 
 	var v = t.add_child("Node").add_properties({"name":"Visual"})
-	v.add_child("OglModel").add_properties({"name":"VisualModel","color":"color"})
+	v.add_child("OglModel").add_properties({"name":"VisualModel","color":visual_color})
 	v.add_child("IdentityMapping").add_properties({"input":"@../../dofs","output":"@VisualModel"})
 	
 	

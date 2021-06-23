@@ -57,6 +57,8 @@ func to_xml_from_node(node, depth = 0):
 			property_value = str(property_value.x) + " " + str(property_value.y)
 		elif typeof(property_value) == TYPE_VECTOR3:
 			property_value = str(property_value.x) + " " + str(property_value.y) + " " + str(property_value.z)
+		elif typeof(property_value) == TYPE_COLOR:
+			property_value = str(property_value.r) + " " + str(property_value.g) + " " + str(property_value.b) + " " + str(property_value.a)
 		elif typeof(property_value) in cnst:
 			property_value = str(property_value)
 		else:

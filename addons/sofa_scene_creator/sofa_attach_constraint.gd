@@ -4,7 +4,7 @@ const XMLSceneTree = preload("res://addons/sofa_scene_creator/xml_scene_tree.gd"
 
 export var object_1 : NodePath
 export var object_2 : NodePath
-export var attach_distance : float = 0.1
+export var attach_distance : float = 0.001
 
 func _enter_tree():
 	pass
@@ -50,7 +50,7 @@ func get_xml_tree():
 	r.add_property("name", self.name)
 	r.add_child("NearestPointROI").add_properties({
 		"template":"Vec3d",
-		"name":"np",
+		"name":self.name+"np",
 		"object1":o1d,
 		"object2":o2d,
 		"radius":attach_distance,
@@ -68,8 +68,8 @@ func get_xml_tree():
 	r.add_child("AttachConstraint").add_properties({
 		"object1":o1,
 		"object2":o2,
-		"indices1":"@np.indices1",
-		"indices2":"@np.indices2",
+		"indices1":"@" + self.name+"np" + ".indices1",
+		"indices2":"@" + self.name+"np" + ".indices2",
 		"twoWay":"true",
 	})
 	

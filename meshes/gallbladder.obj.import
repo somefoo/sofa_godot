@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/gallbladder.obj-27d9ce1a68b80765d8d53d54c4ff8307.mesh"
+
+[deps]
+
+files=[ "res://.import/gallbladder.obj-27d9ce1a68b80765d8d53d54c4ff8307.mesh" ]
+
+source_file="res://meshes/gallbladder.obj"
+dest_files=[ "res://.import/gallbladder.obj-27d9ce1a68b80765d8d53d54c4ff8307.mesh", "res://.import/gallbladder.obj-27d9ce1a68b80765d8d53d54c4ff8307.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

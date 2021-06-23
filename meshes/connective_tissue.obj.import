@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/connective_tissue.obj-1cda02ee8a77848ca47e4be7c828bafc.mesh"
+
+[deps]
+
+files=[ "res://.import/connective_tissue.obj-1cda02ee8a77848ca47e4be7c828bafc.mesh" ]
+
+source_file="res://meshes/connective_tissue.obj"
+dest_files=[ "res://.import/connective_tissue.obj-1cda02ee8a77848ca47e4be7c828bafc.mesh", "res://.import/connective_tissue.obj-1cda02ee8a77848ca47e4be7c828bafc.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true
