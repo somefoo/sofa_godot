@@ -15,7 +15,6 @@ var soft_body_youngs_modulus : float = 10000.0
 #var gmsh_file = ""
 
 
-
 var cutable : bool = false
 
 var visual_mesh : Mesh = CubeMesh.new()
@@ -261,7 +260,7 @@ func generate_gmsh_mesh():
 func add_rigid_body_subtree(r):
 	
 	r.add_child("EulerImplicitSolver").add_properties({"rayleighStiffness":"0.01", "rayleighMass":"0.1"})
-	r.add_child("CGLinearSolver").add_properties({"iterations":25, "threshold":0.00000001, "tolerance":1e-05})
+	r.add_child("CGLinearSolver").add_properties({"iterations":10, "threshold":1.0e-9, "tolerance":1.0e-9})
 	
 	r.add_child("MechanicalObject").add_properties({"template":"Rigid3d", "scale":1.0})
 	r.add_child("UniformMass").add_properties({"totalMass":mass})
@@ -298,17 +297,18 @@ func add_soft_body_subtree(r):
 	
 	
 	
-	r.add_child("EulerImplicitSolver").add_properties({"printLog":"false", "rayleighStiffness":"0.1", "rayleighMass":"0.1"})
-	r.add_child("CGLinearSolver").add_properties({"iterations":"10","tolerance":"1.0e-9","threshold":"1.0e-9"})
+	r.add_child("EulerImplicitSolver").add_properties({"printLog":"false", "rayleighStiffness":0.1, "rayleighMass":0.1})
+	r.add_child("CGLinearSolver").add_properties({"iterations":"10","tolerance":1.0e-9,"threshold":1.0e-9})
 	r.add_child("MeshGmshLoader").add_properties({"filename":get_path_to_gmsh_mesh(),"name":"loader", "scale3d":scale, "rotation":rotation_degrees, "translation":translation})
 	r.add_child("MechanicalObject").add_properties({"src":"@loader","name":"dofs"})
 #
 #	# addTetrahedronSetTopology
-	r.add_child("TetrahedronSetTopologyContainer").add_properties({"name":"Container","src":"@loader","tags":""})
+	r.add_child("TetrahedronSetTopologyContainer").add_properties({"name":"Container","src":"@loader","tags":" "})
 	r.add_child("TetrahedronSetTopologyModifier").add_properties({"name":"Modifier"})
 	r.add_child("TetrahedronSetGeometryAlgorithms").add_properties({"name":"GeomAlgo","template":"Vec3d"})
 
-	r.add_child("UniformMass").add_properties({"totalMass":mass})
+	#r.add_child("UniformMass").add_properties({"totalMass":mass}) # This causes a crashes when used with carving, use DiagonalMass
+	r.add_child("DiagonalMass").add_properties({"totalMass":mass})
 	r.add_child("TetrahedronFEMForceField").add_properties({"youngModulus":soft_body_youngs_modulus,"poissonRatio":soft_body_poisson_ratio,"method":"large"})
 	r.add_child("UncoupledConstraintCorrection")
 

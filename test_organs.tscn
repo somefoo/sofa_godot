@@ -15,42 +15,46 @@ gmsh_binary_path = "/usr/bin/gmsh"
 ctmconv_binary_path = "/usr/bin/ctmconv"
 
 [node name="Liver" type="Spatial" parent="."]
+transform = Transform( 0.198403, 0, 0, 0, 0.198403, 0, 0, 0, 0.198403, 0, 0, 0 )
 script = ExtResource( 2 )
 geometry/visual_mesh = ExtResource( 1 )
 mechanical/cutable = false
 mechanical/physics_object = true
 mechanical/physics_object_properties/movable = true
-mechanical/physics_object_properties/mass = 5.0
+mechanical/physics_object_properties/mass = 1.0
 mechanical/physics_object_properties/soft_body = true
 mechanical/physics_object_properties/soft_body_properties/poisson_ratio = 0.4
 mechanical/physics_object_properties/soft_body_properties/youngs_modulus = 10000.0
-visual/color = Color( 0.584314, 0.160784, 0.160784, 1 )
+visual/color = Color( 0.635294, 0.0705882, 0.0705882, 1 )
 
 [node name="Gallbladder" type="Spatial" parent="."]
+transform = Transform( 0.198403, 0, 0, 0, 0.198403, 0, 0, 0, 0.198403, 0, 0, 0 )
 script = ExtResource( 2 )
 geometry/visual_mesh = ExtResource( 4 )
 mechanical/cutable = false
 mechanical/physics_object = true
 mechanical/physics_object_properties/movable = true
-mechanical/physics_object_properties/mass = 0.5
+mechanical/physics_object_properties/mass = 1.0
 mechanical/physics_object_properties/soft_body = true
 mechanical/physics_object_properties/soft_body_properties/poisson_ratio = 0.4
 mechanical/physics_object_properties/soft_body_properties/youngs_modulus = 10000.0
-visual/color = Color( 0.0705882, 0.141176, 0.262745, 1 )
+visual/color = Color( 0.501961, 0.501961, 0.501961, 1 )
 
 [node name="ConnectiveTissue" type="Spatial" parent="."]
+transform = Transform( 0.198403, 0, 0, 0, 0.198403, 0, 0, 0, 0.198403, 0, 0, 0 )
 script = ExtResource( 2 )
 geometry/visual_mesh = ExtResource( 5 )
 mechanical/cutable = false
 mechanical/physics_object = true
 mechanical/physics_object_properties/movable = true
-mechanical/physics_object_properties/mass = 0.2
+mechanical/physics_object_properties/mass = 1.0
 mechanical/physics_object_properties/soft_body = true
 mechanical/physics_object_properties/soft_body_properties/poisson_ratio = 0.4
 mechanical/physics_object_properties/soft_body_properties/youngs_modulus = 10000.0
-visual/color = Color( 0.0627451, 0.741176, 0.152941, 1 )
+visual/color = Color( 0.5, 0.5, 0.5, 1 )
 
 [node name="SofaAttachConstraint" type="Spatial" parent="."]
+transform = Transform( 2.33897, 0, 0, 0, 2.33897, 0, 0, 0, 2.33897, 0, 0, 0 )
 script = ExtResource( 6 )
 object_1 = NodePath("../Liver")
 object_2 = NodePath("../ConnectiveTissue")

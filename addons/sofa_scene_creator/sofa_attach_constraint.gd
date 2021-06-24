@@ -29,14 +29,7 @@ func get_xml_tree():
 	var o1 = get_tree().root.get_child(0).get_sofa_absolute_name(get_node(object_1))
 	var o2 = get_tree().root.get_child(0).get_sofa_absolute_name(get_node(object_2))
 	if(!is_valid_sofa_object(get_node(object_1)) || !is_valid_sofa_object(get_node(object_2))):
-		print("Error, objects constrained are not Sofa Objects.")
-		print("  Both objects must be Soft Bodies because SOFA doesn't like Rigidbodies.")
-		print("  This error did not cause a pre-mature closing as GODOT seems to have a bug.")
-		get_tree().quit()
-		#TODO Exit here, but that isn't working somehow...
-		return null
-		
-
+		assert(false, "Error: both objects in an attach constraint must be Soft Bodies") # because SOFA doesn't like Rigidbodies
 	
 	var o1d = o1 + "/dofs"
 	var o2d = o2 + "/dofs"

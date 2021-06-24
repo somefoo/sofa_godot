@@ -32,23 +32,35 @@ func get_xml_tree():
 	
 	# TODO Which ones do we really need? We could just load all
 	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaOpenglVisual")
-	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaBoundaryCondition")
-	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaGeneralSimpleFem")
 	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaMiscCollision")
-	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaLoader")
+	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaGeneralEngine")
+	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaGeneralDeformable")
+	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaBoundaryCondition")
+	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaGeneralObjectInteraction")
 	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaConstraint")
+	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaLoader")
 	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaImplicitOdeSolver")
+	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaMeshCollision")
+	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaSimpleFem")
 	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaRigid")
+	
 	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaCarving")
+	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaGeneralSimpleFem")
+	root_tree.add_child(root_tree.get_root(), "RequiredPlugin").add_property("name", "SofaTopologyMapping")
+	
+	
+	
+	
 	
 	
 	root_tree.add_child(root_tree.get_root(), "DefaultPipeline").add_properties({"name":"CollisionPipeline", "verbose":"0", "depth":"6"})
 	root_tree.add_child(root_tree.get_root(), "DefaultCollisionGroupManager")
 	root_tree.add_child(root_tree.get_root(), "DefaultContactManager").add_properties({"name":"Response", "response":"default"})
-	root_tree.add_child(root_tree.get_root(), "NewProximityIntersection").add_properties({"alarmDistance":"0.01", "contactDistance":"0.005"})
+	root_tree.add_child(root_tree.get_root(), "NewProximityIntersection").add_properties({"alarmDistance":0.01, "contactDistance":0.005})
 	root_tree.add_child(root_tree.get_root(), "FreeMotionAnimationLoop")
 	root_tree.add_child(root_tree.get_root(), "BruteForceDetection").add_properties({"name":"N2"})
 	root_tree.add_child(root_tree.get_root(), "GenericConstraintSolver").add_properties({"tolerance":0.001, "maxIterations":1000})
+	#root_tree.add_child(root_tree.get_root(), "CarvingManager").add_properties({"active":true, "carvingDistance":0.5})
 	
 	
 	
