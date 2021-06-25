@@ -183,6 +183,7 @@ func _get_property_list():
 	})
 	return property_list
 
+
 func get_path_to_visual_mesh():
 	var project_path = ProjectSettings.globalize_path("res://")
 	if get_child_count() != 0:
@@ -324,8 +325,7 @@ func add_soft_body_subtree(r):
 	var v = t.add_child("Node").add_properties({"name":"Visual"})
 	v.add_child("OglModel").add_properties({"name":"VisualModel","color":visual_color})
 	v.add_child("IdentityMapping").add_properties({"input":"@../../dofs","output":"@VisualModel"})
-	
-	
+
 func get_xml_tree():
 	var xml_tree = XMLSceneTree.new()
 	var r = xml_tree.get_root()

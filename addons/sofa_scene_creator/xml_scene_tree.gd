@@ -11,7 +11,7 @@ class XMLTreeNode:
 		_children.append(XMLTreeNode.new(child))
 		return _children[-1]
 	
-	func append(subtree):
+	func append(subtree : XMLTreeNode):
 		if(subtree != null):
 			_children.append(subtree)
 	
@@ -22,6 +22,10 @@ class XMLTreeNode:
 		for p in range(0, properties.size()):
 			_properties[properties.keys()[p]] = properties.values()[p]
 		return self
+	func get_childeren_list():
+		return _children
+	func get_properties_list():
+		return _properties
 
 var _root = null
 
@@ -32,7 +36,7 @@ func _init(type = "Node"):
 func clear():
 	_root = null
 
-func get_root():
+func get_root() -> XMLTreeNode:
 	return _root
 
 func add_child(node, type = "Node"):

@@ -1,6 +1,7 @@
 tool
 extends Spatial 
 const XMLSceneTree = preload("res://addons/sofa_scene_creator/xml_scene_tree.gd")
+const SofaUtility = preload("res://addons/sofa_scene_creator/sofa_utility.gd")
 
 export var object_1 : NodePath
 export var object_2 : NodePath
@@ -11,24 +12,11 @@ func _enter_tree():
 
 
 
-func is_valid_sofa_object(obj):
-	var is_sofa_object = true
-	if(obj.get_script() == null):
-		is_sofa_object = false
-	elif (obj.get_script().get_path().split('/')[-1].find("sofa_object") != 0):
-		is_sofa_object = false
-	elif(obj.has_method("is_visible") && obj.is_visible() == false):
-		is_sofa_object = false
-	elif(obj.soft_body == false):
-		is_sofa_object = false
-	return is_sofa_object
-
-
 func get_xml_tree():
 	#TODO remove hard coded "dofs" name?
-	var o1 = get_tree().root.get_child(0).get_sofa_absolute_name(get_node(object_1))
-	var o2 = get_tree().root.get_child(0).get_sofa_absolute_name(get_node(object_2))
-	if(!is_valid_sofa_object(get_node(object_1)) || !is_valid_sofa_object(get_node(object_2))):
+	var o1 = SofaUtility.get_sofa_absolute_name(get_node(object_1))
+	var o2 = SofaUtility.get_sofa_absolute_name(get_node(object_2))
+	if(!SofaUtility.is_valid_sofa_object(get_node(object_1)) || !SofaUtility.is_valid_sofa_object(get_node(object_2))):
 		assert(false, "Error: both objects in an attach constraint must be Soft Bodies") # because SOFA doesn't like Rigidbodies
 	
 	var o1d = o1 + "/dofs"

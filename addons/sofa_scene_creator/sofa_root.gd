@@ -1,6 +1,7 @@
 tool
 extends Node
 const XMLSceneTree = preload("res://addons/sofa_scene_creator/xml_scene_tree.gd")
+const SofaUtility = preload("res://addons/sofa_scene_creator/sofa_utility.gd")
 
 
 export(String) var scene_name = "SofaScene"
@@ -76,18 +77,6 @@ func get_xml_tree():
 func is_root():
 	return true
 
-# Utility function: Returns true  if an object is a sofa object
-#					Returns false if an object is not a sofa object
-func is_sofa_node(obj):
-	var is_sofa_component = true
-	if(obj.get_script() == null):
-		is_sofa_component = false
-	elif (obj.get_script().get_path().split('/')[-1].find("sofa") != 0):
-		is_sofa_component = false
-	elif(obj.has_method("is_visible") && obj.is_visible() == false):
-		is_sofa_component = false
-	return is_sofa_component
-
 # A utility function used to print the scene tree
 # it is mostly for debugging scenes during development
 func explore_subtree(obj, prepends=[""], depth=0):
@@ -104,7 +93,7 @@ func explore_subtree(obj, prepends=[""], depth=0):
 		if(last_child): prepends[depth] = "  "
 		
 		var child = valid_children[child_id]
-		var is_sofa_component = is_sofa_node(child)
+		var is_sofa_component = SofaUtility.is_sofa_node(child)
 		#print(prepend + child.get_name())
 		var prepend = ""
 		for p in prepends:
@@ -117,7 +106,7 @@ func explore_subtree(obj, prepends=[""], depth=0):
 				prepend[-1] = "├"
 		if(is_sofa_component):
 			print("[✔] " + prepend + child.get_name() + "")
-			get_sofa_absolute_name(child)
+			SofaUtility.get_sofa_absolute_name(child)
 			if(child.has_method("get_xml")):
 				#child.get_xml()
 				pass
@@ -127,16 +116,6 @@ func explore_subtree(obj, prepends=[""], depth=0):
 		var child_prepend = prepends.duplicate(true)
 		child_prepend.append(" │")
 		explore_subtree(child,child_prepend, depth + 1)
-
-func get_sofa_absolute_name(obj):
-	var name = ""
-	if(is_sofa_node(obj)):
-		return "@/" + str(obj.get_path()).trim_prefix("/root/" + get_name() + "/")
-		#while(obj.get_parent() != null):
-		#	name = 
-	else:
-		print("Error, looking up sofa name of non-sofa object.")
-		get_tree().quit()
 	
 
 # This function creates the actual XML tree out of the
@@ -156,7 +135,7 @@ func construct_xml_tree(obj, depth=0):
 	for child_id in range(0, valid_children.size()):
 
 		var child = valid_children[child_id]
-		var is_sofa_component = is_sofa_node(child)
+		var is_sofa_component = SofaUtility.is_sofa_node(child)
 
 		if(is_sofa_component):
 			var my_tree = xml_tree.get_root()
@@ -166,7 +145,53 @@ func construct_xml_tree(obj, depth=0):
 				xml_tree.get_root().append(child_tree.get_root())
 	return xml_tree
 
+var _post_construction_attachments_paths = []
+var _post_construction_attachments_trees = []
 
+# This function will cause addition trees to be attached to the tree constructed
+# from the scene. Can be used to add required nodes to objects.
+func add_requirement_to_node(node, tree : XMLSceneTree):
+	assert(SofaUtility.is_sofa_node(node), "Error, trying to attach to non-sofa node.")
+	_post_construction_attachments_paths.push_back(SofaUtility.get_sofa_absolute_name(node))
+	_post_construction_attachments_trees.push_back(tree)
+
+func find_xml_node_by_path(root : XMLSceneTree.XMLTreeNode, path) -> XMLSceneTree.XMLTreeNode:
+	var name_list = path.split('/')
+	if(path == "@"):
+		#Todo does this work?
+		return root
+	#name_list[0] = get_name()
+	name_list.remove(0)
+	
+	var current_node = root
+	
+	while !name_list.empty():
+		var found = null
+		for c in current_node.get_childeren_list():
+			#print("Check: " + str(c.get_properties_list().get("name")) + " == " + name_list[0])
+			if c.get_properties_list().get("name") == name_list[0]:
+				#print("Found: " + c.get_properties_list().get("name"))
+				found = c
+				break
+				
+		if found != null:
+			name_list.remove(0)
+			if(name_list.empty()):
+				return found
+			else:
+				current_node = found
+		else:
+			return null
+		
+		return null
+	
+	while current_node.get_childeren_list()[0].get(name) == name_list[0]:
+		current_node = current_node.get_childeren_list()[name]
+		name_list.pop_front()
+		if(name_list.empty()):
+			return current_node
+	return null
+	
 
 
 #[✔] - U+2714
@@ -184,13 +209,22 @@ func _ready():
 		
 		explore_subtree(get_tree().get_root())
 		
-
 		
 		
 		
 		#my_tree
 		#print(my_tree.to_xml())
-		var xml_string = construct_xml_tree(self).to_xml()
+		var xml_tree = construct_xml_tree(self)
+		
+		while(!_post_construction_attachments_paths.empty()):
+			var n = find_xml_node_by_path(xml_tree.get_root(), _post_construction_attachments_paths[0])
+			assert(n != null, "Internal Error, trying to post-attach to node which doesn't exist.")
+			n.append(_post_construction_attachments_trees[0].get_root())
+			_post_construction_attachments_paths.pop_front()
+			_post_construction_attachments_trees.pop_front()
+			
+		
+		var xml_string = xml_tree.to_xml()
 		if(print_xml_output):
 			print(xml_string)
 		var file = File.new()

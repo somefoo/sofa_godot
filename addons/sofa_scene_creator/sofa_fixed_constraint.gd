@@ -1,6 +1,7 @@
 tool
 extends Spatial 
 const XMLSceneTree = preload("res://addons/sofa_scene_creator/xml_scene_tree.gd")
+const SofaUtility = preload("res://addons/sofa_scene_creator/sofa_utility.gd")
 
 export var ROI : NodePath
 export(Array, NodePath) var targets
@@ -37,13 +38,22 @@ func is_valid_sofa_object(obj):
 func get_xml_tree():
 	#TODO remove hard coded "dofs" name?
 	
+	var xml_treee = XMLSceneTree.new()
+	var rr = xml_treee.get_root()
+	rr.add_property("name", self.name)
+	
+	for t in targets:
+		get_tree().root.get_child(0).add_requirement_to_node(get_node(t),xml_treee)
+	
+	return null
+	pass
 	if !is_valid_sofa_ROI(get_node(ROI)):
 		print("Error, the ROI select is not a valid ROI.")
 		print("  This error did not cause a pre-mature closing as GODOT seems to have a bug.")
 		get_tree().quit()
 	
 	for t in targets:
-		var o2 = get_tree().root.get_child(0).get_sofa_absolute_name(get_node(t))
+		var o2 = SofaUtility.get_sofa_absolute_name(get_node(t))
 		if(!is_valid_sofa_object(get_node(t))):
 			print("Error, objects constrained are not Sofa Objects.")
 			print("  This error did not cause a pre-mature closing as GODOT seems to have a bug.")
