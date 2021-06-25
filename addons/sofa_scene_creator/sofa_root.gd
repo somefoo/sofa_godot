@@ -57,7 +57,7 @@ func get_xml_tree():
 	root_tree.add_child(root_tree.get_root(), "DefaultPipeline").add_properties({"name":"CollisionPipeline", "verbose":"0", "depth":"6"})
 	root_tree.add_child(root_tree.get_root(), "DefaultCollisionGroupManager")
 	root_tree.add_child(root_tree.get_root(), "DefaultContactManager").add_properties({"name":"Response", "response":"default"})
-	root_tree.add_child(root_tree.get_root(), "NewProximityIntersection").add_properties({"alarmDistance":0.01, "contactDistance":0.005})
+	root_tree.add_child(root_tree.get_root(), "NewProximityIntersection").add_properties({"alarmDistance":0.5, "contactDistance":0.25})
 	root_tree.add_child(root_tree.get_root(), "FreeMotionAnimationLoop")
 	root_tree.add_child(root_tree.get_root(), "BruteForceDetection").add_properties({"name":"N2"})
 	root_tree.add_child(root_tree.get_root(), "GenericConstraintSolver").add_properties({"tolerance":0.001, "maxIterations":1000})

@@ -53,22 +53,22 @@ func to_xml_from_node(node, depth = 0):
 		var property_value = node._properties.values()[p]
 		var property_string = ""
 		
-		var iter = [TYPE_INT_ARRAY, TYPE_REAL_ARRAY]
+		var iter = [TYPE_INT_ARRAY, TYPE_REAL_ARRAY, TYPE_ARRAY]
 		var cnst = [TYPE_INT, TYPE_REAL, TYPE_STRING, TYPE_BOOL]
 		if typeof(property_value) in iter:
 			for i in property_value: property_string += str(i) + " "
 		elif typeof(property_value) == TYPE_VECTOR2:
-			property_value = str(property_value.x) + " " + str(property_value.y)
+			property_string = str(property_value.x) + " " + str(property_value.y)
 		elif typeof(property_value) == TYPE_VECTOR3:
-			property_value = str(property_value.x) + " " + str(property_value.y) + " " + str(property_value.z)
+			property_string = str(property_value.x) + " " + str(property_value.y) + " " + str(property_value.z)
 		elif typeof(property_value) == TYPE_COLOR:
-			property_value = str(property_value.r) + " " + str(property_value.g) + " " + str(property_value.b) + " " + str(property_value.a)
+			property_string = str(property_value.r) + " " + str(property_value.g) + " " + str(property_value.b) + " " + str(property_value.a)
 		elif typeof(property_value) in cnst:
-			property_value = str(property_value)
+			property_string = str(property_value)
 		else:
-			assert(false, "This property is currently not handled: " + str(property_value))
+			assert(false, "This property is currently not handled(" + str(typeof(property_value)) + "): " + str(property_value))
 			
-		properties_string += node._properties.keys()[p] + '="' + property_value + '" '
+		properties_string += node._properties.keys()[p] + '="' + property_string + '" '
 
 
 	var xml_string = ''
