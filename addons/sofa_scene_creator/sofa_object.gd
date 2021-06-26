@@ -30,7 +30,7 @@ func _enter_tree():
 	
 	print("Sofa Object Entered Tree.")
 
-
+# See GODOT reference https://docs.godotengine.org/en/stable/classes/class_object.html
 func _get(property):
 	if property == "mechanical/physics_object":
 		return physics_object
@@ -41,8 +41,8 @@ func _get(property):
 		
 	if property == "mechanical/physics_object_properties/soft_body":
 		return soft_body
-#	if property == "mechanical/physics_object_properties/soft_body_properties/gmsh_file":
-#		return gmsh_file
+	#if property == "mechanical/physics_object_properties/soft_body_properties/gmsh_file":
+	#	return gmsh_file
 	if property == "mechanical/physics_object_properties/soft_body_properties/poisson_ratio":
 		return soft_body_poisson_ratio
 	if property == "mechanical/physics_object_properties/soft_body_properties/youngs_modulus":
@@ -56,6 +56,7 @@ func _get(property):
 	if property == "visual/color":
 		return visual_color
 
+# See GODOT reference https://docs.godotengine.org/en/stable/classes/class_object.html
 func _set(property, value):
 	if property == "mechanical/physics_object":
 		physics_object = value
@@ -72,8 +73,8 @@ func _set(property, value):
 		soft_body_poisson_ratio = value
 	if property == "mechanical/physics_object_properties/soft_body_properties/youngs_modulus":
 		soft_body_youngs_modulus = value
-#	if property == "mechanical/physics_object_properties/soft_body_properties/gmsh_file":
-#		gmsh_file = value
+	#if property == "mechanical/physics_object_properties/soft_body_properties/gmsh_file":
+	#	gmsh_file = value
 		
 	if property == "mechanical/cutable":
 		cutable = value
@@ -106,9 +107,7 @@ func _set(property, value):
 		
 	return true
 
-
-
-# call once when node selected 
+# See GODOT reference https://docs.godotengine.org/en/stable/classes/class_object.html
 func _get_property_list():
 	var property_list = []
 	
@@ -155,13 +154,13 @@ func _get_property_list():
 			"type": TYPE_BOOL
 		})
 		if soft_body==true:
-#			property_list.append({
-#				"hint": PROPERTY_HINT_FILE,
-#				"hint_string" : "*.gmsh, *.msh",
-#				"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
-#				"name": "mechanical/physics_object_properties/soft_body_properties/gmsh_file",
-#				"type": TYPE_STRING
-#			})
+			#property_list.append({
+			#	"hint": PROPERTY_HINT_FILE,
+			#	"hint_string" : "*.gmsh, *.msh",
+			#	"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
+			#	"name": "mechanical/physics_object_properties/soft_body_properties/gmsh_file",
+			#	"type": TYPE_STRING
+			#})
 			property_list.append({
 				"hint": PROPERTY_HINT_NONE,
 				"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
@@ -183,22 +182,20 @@ func _get_property_list():
 	})
 	return property_list
 
-
+# Returns the path to the visual (.obj) mesh-file of this object
 func get_path_to_visual_mesh():
 	var project_path = ProjectSettings.globalize_path("res://")
 	if get_child_count() != 0:
 		var object_path = visual_mesh.resource_path # This line still throws an error, but it works
 		var absolute_object_path = project_path + object_path.substr(6,-1)
 		return absolute_object_path
+
+# Returns the path to the gmsh (.msh) mesh-file of this object
 func get_path_to_gmsh_mesh():
 	var path = get_path_to_visual_mesh()
 	return path.substr(0, len(path) -4) + '.msh'
-	
-	#var project_path = ProjectSettings.globalize_path("res://")
-	#if get_child_count() != 0:
-	#	var object_path = gmsh_file # This line still throws an error, but it works
-	#	var absolute_object_path = project_path + object_path.substr(6,-1)
-	#	return absolute_object_path
+
+# Creates gmsh files from .obj visual mesh and stores it in the same folder
 func generate_gmsh_mesh():
 	var path = get_path_to_visual_mesh()
 	var export_path = get_path_to_gmsh_mesh()
@@ -258,6 +255,7 @@ func generate_gmsh_mesh():
 			print("  Set the gmsh binary path in the root node.")
 			print("  [sudo apt install gmsh]")
 
+# Attach nodes for rigid-bodies (also edit rigid-body if you edit this)
 func add_rigid_body_subtree(r):
 	
 	r.add_child("EulerImplicitSolver").add_properties({"rayleighStiffness":"0.01", "rayleighMass":"0.1"})
@@ -290,7 +288,7 @@ func add_rigid_body_subtree(r):
 	col.add_child("PointCollisionModel").add_properties({"contactStiffness":10})
 	col.add_child("RigidMapping")
 
-
+# Attach nodes for soft-bodies (also edit soft-body if you edit this)
 func add_soft_body_subtree(r):
 	# Generate gmsh file if the current visual mesh is newer than the gmsh
 	generate_gmsh_mesh()

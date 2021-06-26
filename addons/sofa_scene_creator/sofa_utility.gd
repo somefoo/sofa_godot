@@ -1,6 +1,6 @@
 extends Reference
-# Utility function: Returns true  if an object is a sofa object
-#					Returns false if an object is not a sofa object
+# Utility function: Returns true  if an object is a sofa node
+#					Returns false if not
 static func is_sofa_node(obj, verbose : bool = false) -> bool:
 	if(obj.get_script() == null):
 		if (verbose): print("No script attached.")
@@ -13,6 +13,8 @@ static func is_sofa_node(obj, verbose : bool = false) -> bool:
 		return false
 	return true
 
+# Utility function: Returns true if an object is a sofa region of interest
+#					Returns false if not
 static func is_valid_sofa_ROI(obj, verbose : bool = false) -> bool:
 	if(!is_sofa_node(obj)):
 		return false
@@ -21,7 +23,8 @@ static func is_valid_sofa_ROI(obj, verbose : bool = false) -> bool:
 		return false
 	return true
 
-
+# Utility function: Returns true if an object is a sofa object (specific node)
+#					Returns false if not
 static func is_valid_sofa_object(obj, verbose : bool = false) -> bool:
 	if(!is_sofa_node(obj)):
 		return false
@@ -33,11 +36,10 @@ static func is_valid_sofa_object(obj, verbose : bool = false) -> bool:
 		return false
 	return true
 
+# Utility function: Returns the SOFA path to the object
 static func get_sofa_absolute_name(obj) -> String:
 	if(is_sofa_node(obj)):
 		return "@/" + str(obj.get_path()).trim_prefix("/root/" + obj.get_tree().root.get_child(0).get_name() + "/")
-		#while(obj.get_parent() != null):
-		#	name = 
 	else:
 		assert(false, "Error, looking up sofa name of non-sofa object.")
 		return ""

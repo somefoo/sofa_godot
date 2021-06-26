@@ -14,12 +14,15 @@
 
 [node name="SofaRoot" type="Node"]
 script = ExtResource( 3 )
+gravity = Vector3( 0, -9806.65, 0 )
+collision_distance = 3.0
 sofa_binary_path = "/home/pit/repos/sofa/build/v2006/bin/runSofa"
 gmsh_binary_path = "/usr/bin/gmsh"
 ctmconv_binary_path = "/usr/bin/ctmconv"
 
 [node name="Liver" type="Spatial" parent="."]
 transform = Transform( 0.198403, 0, 0, 0, 0.198403, 0, 0, 0, 0.198403, 0, 0, 0 )
+visible = false
 script = ExtResource( 2 )
 geometry/visual_mesh = ExtResource( 1 )
 mechanical/cutable = true
@@ -33,6 +36,7 @@ visual/color = Color( 0.635294, 0.0705882, 0.0705882, 1 )
 
 [node name="Gallbladder" type="Spatial" parent="."]
 transform = Transform( 0.198403, 0, 0, 0, 0.198403, 0, 0, 0, 0.198403, 0, 0, 0 )
+visible = false
 script = ExtResource( 2 )
 geometry/visual_mesh = ExtResource( 4 )
 mechanical/cutable = true
@@ -46,6 +50,7 @@ visual/color = Color( 0.780392, 0, 1, 1 )
 
 [node name="ConnectiveTissue" type="Spatial" parent="."]
 transform = Transform( 0.198403, 0, 0, 0, 0.198403, 0, 0, 0, 0.198403, 0, 0, 0 )
+visible = false
 script = ExtResource( 2 )
 geometry/visual_mesh = ExtResource( 5 )
 mechanical/cutable = false
@@ -58,25 +63,31 @@ mechanical/physics_object_properties/soft_body_properties/youngs_modulus = 10000
 visual/color = Color( 0.5, 0.5, 0.5, 1 )
 
 [node name="SofaAttachConstraint" type="Spatial" parent="."]
-transform = Transform( 2.33897, 0, 0, 0, 2.33897, 0, 0, 0, 2.33897, 0, 0, 0 )
+transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+visible = false
 script = ExtResource( 6 )
 object_1 = NodePath("../Liver")
 object_2 = NodePath("../ConnectiveTissue")
 attach_distance = 0.01
 
 [node name="SofaAttachConstraint2" type="Spatial" parent="."]
+transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+visible = false
 script = ExtResource( 6 )
 object_1 = NodePath("../Gallbladder")
 object_2 = NodePath("../ConnectiveTissue")
 attach_distance = 0.01
 
 [node name="SofaFixedConstraintTarget" type="Spatial" parent="."]
+transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+visible = false
 script = ExtResource( 7 )
 region_of_interest = NodePath("../SofaAABoxROI")
 targets = [ NodePath("../Liver") ]
 
 [node name="SofaAABoxROI" type="Spatial" parent="."]
 transform = Transform( 11.9618, 0, 0, 0, 4.06812, 0, 0, 0, 18.4826, 0, 19.6922, 6.36343 )
+visible = false
 script = ExtResource( 8 )
 
 [node name="SofaSphereROI" type="Spatial" parent="."]
@@ -84,9 +95,10 @@ transform = Transform( 7.78616, 0, 0, 0, 7.78616, 0, 0, 0, 7.78616, -2.05169, 11
 script = ExtResource( 9 )
 
 [node name="SofaFixedConstraint" type="Spatial" parent="."]
+transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
 script = ExtResource( 7 )
 region_of_interest = NodePath("../SofaSphereROI")
-targets = [ NodePath("../Liver"), NodePath("../Rope") ]
+targets = [ NodePath("../Rope") ]
 
 [node name="Star" type="Spatial" parent="."]
 transform = Transform( 2.23892, 0, 0, 0, 2.23892, 0, 0, 0, 2.23892, 0, 0, 53.7966 )
@@ -95,14 +107,14 @@ geometry/visual_mesh = ExtResource( 10 )
 mechanical/cutable = false
 mechanical/physics_object = true
 mechanical/physics_object_properties/movable = true
-mechanical/physics_object_properties/mass = 1000.0
+mechanical/physics_object_properties/mass = 3.0
 mechanical/physics_object_properties/soft_body = true
 mechanical/physics_object_properties/soft_body_properties/poisson_ratio = 0.4
 mechanical/physics_object_properties/soft_body_properties/youngs_modulus = 5000.0
 visual/color = Color( 0.5, 0.5, 0.5, 1 )
 
 [node name="Floor" type="Spatial" parent="."]
-transform = Transform( 400.589, 0, 0, 0, 34.1879, 0, 0, 0, 9.6943, 0, -27.9729, 0 )
+transform = Transform( -400.589, 2.9888e-06, 0, -3.50206e-05, -34.1879, 0, 0, 0, 9.6943, 0, -27.9729, 0 )
 script = ExtResource( 2 )
 geometry/visual_mesh = ExtResource( 11 )
 mechanical/cutable = false
@@ -122,10 +134,11 @@ mechanical/physics_object_properties/movable = true
 mechanical/physics_object_properties/mass = 1.0
 mechanical/physics_object_properties/soft_body = true
 mechanical/physics_object_properties/soft_body_properties/poisson_ratio = 0.4
-mechanical/physics_object_properties/soft_body_properties/youngs_modulus = 10000.0
+mechanical/physics_object_properties/soft_body_properties/youngs_modulus = 100000.0
 visual/color = Color( 0.5, 0.5, 0.5, 1 )
 
 [node name="SofaAttachConstraint3" type="Spatial" parent="."]
+transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
 script = ExtResource( 6 )
 object_1 = NodePath("../Star")
 object_2 = NodePath("../Rope")

@@ -3,9 +3,14 @@ extends Node
 const XMLSceneTree = preload("res://addons/sofa_scene_creator/xml_scene_tree.gd")
 const SofaUtility = preload("res://addons/sofa_scene_creator/sofa_utility.gd")
 
+#enum UNIT {KILOGRAM_METER, KILOGRAM_MILIMETER}
+#export(UNIT) var unit = UNIT.KILOGRAM_MILIMETER
 
 export(String) var scene_name = "SofaScene"
 export(Vector3) var gravity = Vector3(0,-9.81,0)
+
+
+export(float) var collision_distance = 0.5
 export(String, FILE, GLOBAL) var sofa_binary_path = ""
 export(String, FILE, GLOBAL) var gmsh_binary_path = ""
 export(String, FILE, GLOBAL) var ctmconv_binary_path = ""
@@ -57,7 +62,7 @@ func get_xml_tree():
 	root_tree.add_child(root_tree.get_root(), "DefaultPipeline").add_properties({"name":"CollisionPipeline", "verbose":"0", "depth":"6"})
 	root_tree.add_child(root_tree.get_root(), "DefaultCollisionGroupManager")
 	root_tree.add_child(root_tree.get_root(), "DefaultContactManager").add_properties({"name":"Response", "response":"default"})
-	root_tree.add_child(root_tree.get_root(), "NewProximityIntersection").add_properties({"alarmDistance":0.5, "contactDistance":0.25})
+	root_tree.add_child(root_tree.get_root(), "NewProximityIntersection").add_properties({"alarmDistance":collision_distance*2, "contactDistance":collision_distance})
 	root_tree.add_child(root_tree.get_root(), "FreeMotionAnimationLoop")
 	root_tree.add_child(root_tree.get_root(), "BruteForceDetection").add_properties({"name":"N2"})
 	root_tree.add_child(root_tree.get_root(), "GenericConstraintSolver").add_properties({"tolerance":0.001, "maxIterations":1000})
@@ -145,7 +150,10 @@ func construct_xml_tree(obj, depth=0):
 				xml_tree.get_root().append(child_tree.get_root())
 	return xml_tree
 
+
+# Variable needed for post-attach of requirements to nodes
 var _post_construction_attachments_paths = []
+# Variable needed for post-attach of requirements to nodes
 var _post_construction_attachments_trees = []
 
 # This function will cause addition trees to be attached to the tree constructed
@@ -155,7 +163,8 @@ func add_requirement_to_node(node, tree : XMLSceneTree):
 	_post_construction_attachments_paths.push_back(SofaUtility.get_sofa_absolute_name(node))
 	_post_construction_attachments_trees.push_back(tree)
 
-func find_xml_node_by_path(root : XMLSceneTree.XMLTreeNode, path) -> XMLSceneTree.XMLTreeNode:
+# Returns an XMLTreeNode from path (SOFA path)
+func find_xml_node_by_path(root : XMLSceneTree.XMLTreeNode, path : String) -> XMLSceneTree.XMLTreeNode:
 	var name_list = path.split('/')
 	if(path == "@"):
 		#Todo does this work?
@@ -191,8 +200,6 @@ func find_xml_node_by_path(root : XMLSceneTree.XMLTreeNode, path) -> XMLSceneTre
 		if(name_list.empty()):
 			return current_node
 	return null
-	
-
 
 #[✔] - U+2714
 #[✘] - U+2718
