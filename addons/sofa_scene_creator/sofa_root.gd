@@ -66,7 +66,7 @@ func get_xml_tree():
 	root_tree.add_child(root_tree.get_root(), "FreeMotionAnimationLoop")
 	root_tree.add_child(root_tree.get_root(), "BruteForceDetection").add_properties({"name":"N2"})
 	root_tree.add_child(root_tree.get_root(), "GenericConstraintSolver").add_properties({"tolerance":0.001, "maxIterations":1000})
-	#root_tree.add_child(root_tree.get_root(), "CarvingManager").add_properties({"active":true, "carvingDistance":0.5})
+	root_tree.add_child(root_tree.get_root(), "CarvingManager").add_properties({"active":true, "carvingDistance":collision_distance*1.2})
 	
 	
 	

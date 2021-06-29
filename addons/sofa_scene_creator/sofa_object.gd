@@ -14,8 +14,9 @@ var soft_body_poisson_ratio : float = 0.4
 var soft_body_youngs_modulus : float = 10000.0
 #var gmsh_file = ""
 
+var rigid_body_is_carving_tool : bool = false
 
-var cutable : bool = false
+var soft_body_carving_surface : bool = false
 
 var visual_mesh : Mesh = CubeMesh.new()
 var visual_color : Color = Color(0.5, 0.5, 0.5, 1)
@@ -47,9 +48,12 @@ func _get(property):
 		return soft_body_poisson_ratio
 	if property == "mechanical/physics_object_properties/soft_body_properties/youngs_modulus":
 		return soft_body_youngs_modulus
+	
+	if property == "mechanical/physics_object_properties/rigid_body_properties/carving_tool":
+		return rigid_body_is_carving_tool
 		
-	if property == "mechanical/cutable":
-		return cutable
+	if property == "mechanical/physics_object_properties/soft_body_properties/carving_surface":
+		return soft_body_carving_surface
 		
 	if property == "geometry/visual_mesh":
 		return visual_mesh
@@ -75,9 +79,11 @@ func _set(property, value):
 		soft_body_youngs_modulus = value
 	#if property == "mechanical/physics_object_properties/soft_body_properties/gmsh_file":
 	#	gmsh_file = value
+	if property == "mechanical/physics_object_properties/rigid_body_properties/carving_tool":
+		rigid_body_is_carving_tool = value
 		
-	if property == "mechanical/cutable":
-		cutable = value
+	if property == "mechanical/physics_object_properties/soft_body_properties/carving_surface":
+		soft_body_carving_surface = value
 		
 	if property == "geometry/visual_mesh":
 		visual_mesh = value
@@ -120,12 +126,7 @@ func _get_property_list():
 	})
 	
 	
-	property_list.append({
-		"hint": PROPERTY_HINT_NONE,
-		"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
-		"name": "mechanical/cutable",
-		"type": TYPE_BOOL
-	})
+
 	
 	property_list.append({
 		"hint": PROPERTY_HINT_NONE,
@@ -164,6 +165,12 @@ func _get_property_list():
 			property_list.append({
 				"hint": PROPERTY_HINT_NONE,
 				"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
+				"name": "mechanical/physics_object_properties/soft_body_properties/carving_surface",
+				"type": TYPE_BOOL
+			})
+			property_list.append({
+				"hint": PROPERTY_HINT_NONE,
+				"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
 				"name": "mechanical/physics_object_properties/soft_body_properties/poisson_ratio",
 				"type": TYPE_REAL
 			})
@@ -172,6 +179,13 @@ func _get_property_list():
 				"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
 				"name": "mechanical/physics_object_properties/soft_body_properties/youngs_modulus",
 				"type": TYPE_REAL
+			})
+		else:
+			property_list.append({
+				"hint": PROPERTY_HINT_NONE,
+				"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
+				"name": "mechanical/physics_object_properties/rigid_body_properties/carving_tool",
+				"type": TYPE_BOOL
 			})
 			
 	property_list.append({
@@ -263,6 +277,7 @@ func add_rigid_body_subtree(r):
 	
 	r.add_child("MechanicalObject").add_properties({"template":"Rigid3d", "scale":1.0})
 	r.add_child("UniformMass").add_properties({"totalMass":mass})
+	#r.add_child("DiagonalMass").add_properties({"totalMass":mass})
 	r.add_child("UncoupledConstraintCorrection")
 	
 	if(not movable):
@@ -282,10 +297,15 @@ func add_rigid_body_subtree(r):
 	col.add_child("MeshObjLoader").add_properties({"name":"CollisionMeshLoader", "filename":get_path_to_visual_mesh(), "scale3d":scale, "rotation":rotation_degrees, "translation":translation})
 	col.add_child("MeshTopology").add_properties({"src":"@CollisionMeshLoader"})
 	col.add_child("MechanicalObject").add_properties({"scale":1.0})
+	col.add_child("UncoupledConstraintCorrection")
 	
-	col.add_child("TriangleCollisionModel").add_properties({"contactStiffness":10})
-	col.add_child("LineCollisionModel").add_properties({"contactStiffness":10})
-	col.add_child("PointCollisionModel").add_properties({"contactStiffness":10})
+	var tags = ""
+	if rigid_body_is_carving_tool == true:
+		tags = "CarvingTool"
+	
+	col.add_child("TriangleCollisionModel").add_properties({"contactStiffness":10, "tags":tags})
+	col.add_child("LineCollisionModel").add_properties({"contactStiffness":10, "tags":tags})
+	col.add_child("PointCollisionModel").add_properties({"contactStiffness":10, "tags":tags})
 	col.add_child("RigidMapping")
 
 # Attach nodes for soft-bodies (also edit soft-body if you edit this)
@@ -297,7 +317,9 @@ func add_soft_body_subtree(r):
 	
 	
 	r.add_child("EulerImplicitSolver").add_properties({"printLog":"false", "rayleighStiffness":0.1, "rayleighMass":0.1})
-	r.add_child("CGLinearSolver").add_properties({"iterations":"10","tolerance":1.0e-9,"threshold":1.0e-9})
+	r.add_child("CGLinearSolver").add_properties({"iterations":"150","tolerance":1.0e-9,"threshold":1.0e-9}) # We need a lot of iterations, otherwise the size of the uniform-mass affects the scene too much
+	#r.add_child("SparseLDLSolver")
+	#r.add_child("ShewchukPCGLinearSolver").add_properties({"iterations":"1000", "tolerance":'1e-9', "preconditioners":"LUSolver", "build_precond":'1', "update_step":'1000'})
 	r.add_child("MeshGmshLoader").add_properties({"filename":get_path_to_gmsh_mesh(),"name":"loader", "scale3d":scale, "rotation":rotation_degrees, "translation":translation})
 	r.add_child("MechanicalObject").add_properties({"src":"@loader","name":"dofs"})
 #
@@ -309,7 +331,7 @@ func add_soft_body_subtree(r):
 	#r.add_child("UniformMass").add_properties({"totalMass":mass}) # This causes a crashes when used with carving, use DiagonalMass
 	r.add_child("DiagonalMass").add_properties({"totalMass":mass})
 	r.add_child("TetrahedronFEMForceField").add_properties({"youngModulus":soft_body_youngs_modulus,"poissonRatio":soft_body_poisson_ratio,"method":"large"})
-	r.add_child("UncoupledConstraintCorrection")
+	r.add_child("UncoupledConstraintCorrection").add_properties({"useOdeSolverIntegrationFactors":1})
 
 
 	var t = r.add_child("Node").add_properties({"name":"Topo"})
@@ -318,7 +340,11 @@ func add_soft_body_subtree(r):
 	t.add_child("TriangleSetTopologyModifier").add_properties({"name":"Modifier"})
 	t.add_child("TriangleSetGeometryAlgorithms").add_properties({"name":"GeomAlgo","template":"Vec3d"})
 	t.add_child("Tetra2TriangleTopologicalMapping").add_properties({"input":"@../Container","output":"@Container"})
-	t.add_child("TriangleCollisionModel")
+	
+	if(soft_body_carving_surface):
+		t.add_child("TriangleCollisionModel").add_properties({"tags":"CarvingSurface"})
+	else:
+		t.add_child("TriangleCollisionModel")
 
 	var v = t.add_child("Node").add_properties({"name":"Visual"})
 	v.add_child("OglModel").add_properties({"name":"VisualModel","color":visual_color})
