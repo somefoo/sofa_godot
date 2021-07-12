@@ -20,6 +20,7 @@ var soft_body_carving_surface : bool = false
 
 var visual_mesh : Mesh = CubeMesh.new()
 var visual_color : Color = Color(0.5, 0.5, 0.5, 1)
+var visual_texture : String = "None"
 var material = SpatialMaterial.new()
 #onready var meshInstance = $Mesh
 #export (SpatialMaterial) var material = SpatialMaterial.new()
@@ -59,6 +60,8 @@ func _get(property):
 		return visual_mesh
 	if property == "visual/color":
 		return visual_color
+	if property == "visual/texture":
+		return visual_texture
 
 # See GODOT reference https://docs.godotengine.org/en/stable/classes/class_object.html
 func _set(property, value):
@@ -110,6 +113,20 @@ func _set(property, value):
 		else:
 			var material = $MeshInstance.get_surface_material(0)
 			material.albedo_color = visual_color
+	if property == "visual/texture":
+		var checkFile = File.new()
+		if checkFile.file_exists(value) or value == "" or value == "None" or value == "none" or value == "null" or value == "Null":
+			if(value == ""):
+				visual_texture = "None"
+			else:
+				visual_texture = value
+		else:
+			return false
+		
+		if get_node_or_null("MeshInstance") == null or visual_texture == "None":
+			pass
+		else:
+			material.albedo_texture = load(value)
 		
 	return true
 
@@ -194,7 +211,24 @@ func _get_property_list():
 		"name": "visual/color",
 		"type": TYPE_COLOR
 	})
+	
+	property_list.append({
+		"hint": PROPERTY_HINT_FILE,
+		"hint_string" : "*.jpg, *.png",
+		"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
+		"name": "visual/texture",
+		"type": TYPE_STRING
+	})
 	return property_list
+
+# Returns the path to the visual (.jpg, .png) texture-file of this object
+func get_path_to_visual_texture():
+	var project_path = ProjectSettings.globalize_path("res://")
+	if get_child_count() != 0:
+		var object_path = visual_texture # This line still throws an error, but it works
+		var absolute_object_path = project_path + object_path.substr(6,-1)
+		return absolute_object_path
+
 
 # Returns the path to the visual (.obj) mesh-file of this object
 func get_path_to_visual_mesh():
@@ -290,7 +324,10 @@ func add_rigid_body_subtree(r):
 	#<OglModel name="Visual" src="@meshVisualLoader" color="gray" scale="1.0"/>
 	#<RigidMapping input="@.." output="@Visual"/>
 	vis.add_child("MeshObjLoader").add_properties({"name":"VisualMeshLoader", "filename":get_path_to_visual_mesh(), "scale3d":scale, "rotation":rotation_degrees, "translation":translation})
-	vis.add_child("OglModel").add_properties({"name":"VisualModel", "src":"@VisualMeshLoader", "scale":1.0, "color":visual_color})
+	if(visual_texture != "None"):
+		vis.add_child("OglModel").add_properties({"name":"VisualModel", "src":"@VisualMeshLoader", "scale":1.0, "color":visual_color, "texturename":get_path_to_visual_texture()})
+	else:
+		vis.add_child("OglModel").add_properties({"name":"VisualModel", "src":"@VisualMeshLoader", "scale":1.0, "color":visual_color})
 	vis.add_child("RigidMapping").add_properties({"input":"@..", "output":"@VisualModel"})
 	
 	var col = r.add_child("Node").add_properties({"name":"Collision"})
@@ -347,7 +384,10 @@ func add_soft_body_subtree(r):
 		t.add_child("TriangleCollisionModel")
 
 	var v = t.add_child("Node").add_properties({"name":"Visual"})
-	v.add_child("OglModel").add_properties({"name":"VisualModel","color":visual_color})
+	if(visual_texture != "None"):
+		v.add_child("OglModel").add_properties({"name":"VisualModel","color":visual_color,"texturename":get_path_to_visual_texture()})
+	else:
+		v.add_child("OglModel").add_properties({"name":"VisualModel","color":visual_color})
 	v.add_child("IdentityMapping").add_properties({"input":"@../../dofs","output":"@VisualModel"})
 
 func get_xml_tree():

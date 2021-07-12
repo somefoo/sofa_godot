@@ -1,18 +1,24 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://meshes/star.obj" type="ArrayMesh" id=1]
 [ext_resource path="res://addons/sofa_scene_creator/sofa_object.gd" type="Script" id=2]
 [ext_resource path="res://addons/sofa_scene_creator/sofa_root.gd" type="Script" id=3]
-[ext_resource path="res://meshes/rope_holder.obj" type="ArrayMesh" id=4]
-[ext_resource path="res://meshes/gallbladder.obj" type="ArrayMesh" id=5]
 [ext_resource path="res://addons/sofa_scene_creator/sofa_attach_constraint.gd" type="Script" id=6]
 [ext_resource path="res://addons/sofa_scene_creator/sofa_fixed_constraint.gd" type="Script" id=7]
 [ext_resource path="res://addons/sofa_scene_creator/sofa_aa_box_roi.gd" type="Script" id=8]
 [ext_resource path="res://addons/sofa_scene_creator/sofa_sphere_roi.gd" type="Script" id=9]
-[ext_resource path="res://meshes/connective_tissue.obj" type="ArrayMesh" id=10]
-[ext_resource path="res://meshes/liver.obj" type="ArrayMesh" id=11]
+
+[sub_resource type="CubeMesh" id=1]
+
+[sub_resource type="CubeMesh" id=2]
+
+[sub_resource type="CubeMesh" id=3]
 
 [sub_resource type="CubeMesh" id=5]
+
+[sub_resource type="CubeMesh" id=6]
+
+[sub_resource type="CubeMesh" id=7]
 
 [node name="SofaRoot" type="Node"]
 script = ExtResource( 3 )
@@ -24,45 +30,46 @@ ctmconv_binary_path = "/usr/bin/ctmconv"
 
 [node name="Liver" type="Spatial" parent="."]
 transform = Transform( 0.198403, 0, 0, 0, 0.198403, 0, 0, 0, 0.198403, 0, 0, 0 )
+visible = false
 script = ExtResource( 2 )
-geometry/visual_mesh = ExtResource( 11 )
+geometry/visual_mesh = SubResource( 1 )
 mechanical/physics_object = true
 mechanical/physics_object_properties/movable = true
 mechanical/physics_object_properties/mass = 1.0
-mechanical/physics_object_properties/soft_body = true
-mechanical/physics_object_properties/soft_body_properties/carving_surface = true
-mechanical/physics_object_properties/soft_body_properties/poisson_ratio = 0.4
-mechanical/physics_object_properties/soft_body_properties/youngs_modulus = 10000.0
+mechanical/physics_object_properties/soft_body = false
+mechanical/physics_object_properties/rigid_body_properties/carving_tool = false
 visual/color = Color( 0.5, 0.5, 0.5, 1 )
+visual/texture = "None"
 
 [node name="Gallbladder" type="Spatial" parent="."]
 transform = Transform( 0.198403, 0, 0, 0, 0.198403, 0, 0, 0, 0.198403, 0, 0, 0 )
+visible = false
 script = ExtResource( 2 )
-geometry/visual_mesh = ExtResource( 5 )
+geometry/visual_mesh = SubResource( 2 )
 mechanical/physics_object = true
 mechanical/physics_object_properties/movable = true
 mechanical/physics_object_properties/mass = 1.0
-mechanical/physics_object_properties/soft_body = true
-mechanical/physics_object_properties/soft_body_properties/carving_surface = false
-mechanical/physics_object_properties/soft_body_properties/poisson_ratio = 0.4
-mechanical/physics_object_properties/soft_body_properties/youngs_modulus = 10000.0
+mechanical/physics_object_properties/soft_body = false
+mechanical/physics_object_properties/rigid_body_properties/carving_tool = false
 visual/color = Color( 0.5, 0.5, 0.5, 1 )
+visual/texture = "None"
 
 [node name="ConnectiveTissue" type="Spatial" parent="."]
 transform = Transform( 0.198403, 0, 0, 0, 0.198403, 0, 0, 0, 0.198403, 0, 0, 0 )
+visible = false
 script = ExtResource( 2 )
-geometry/visual_mesh = ExtResource( 10 )
+geometry/visual_mesh = SubResource( 3 )
 mechanical/physics_object = true
 mechanical/physics_object_properties/movable = true
 mechanical/physics_object_properties/mass = 1.0
-mechanical/physics_object_properties/soft_body = true
-mechanical/physics_object_properties/soft_body_properties/carving_surface = false
-mechanical/physics_object_properties/soft_body_properties/poisson_ratio = 0.4
-mechanical/physics_object_properties/soft_body_properties/youngs_modulus = 10000.0
+mechanical/physics_object_properties/soft_body = false
+mechanical/physics_object_properties/rigid_body_properties/carving_tool = false
 visual/color = Color( 0.5, 0.5, 0.5, 1 )
+visual/texture = "None"
 
 [node name="SofaAttachConstraint" type="Spatial" parent="."]
 transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+visible = false
 script = ExtResource( 6 )
 object_1 = NodePath("../Liver")
 object_2 = NodePath("../ConnectiveTissue")
@@ -70,6 +77,7 @@ attach_distance = 0.01
 
 [node name="SofaAttachConstraint2" type="Spatial" parent="."]
 transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+visible = false
 script = ExtResource( 6 )
 object_1 = NodePath("../Gallbladder")
 object_2 = NodePath("../ConnectiveTissue")
@@ -77,20 +85,24 @@ attach_distance = 0.01
 
 [node name="SofaFixedConstraintTarget" type="Spatial" parent="."]
 transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+visible = false
 script = ExtResource( 7 )
 region_of_interest = NodePath("../SofaAABoxROI")
 targets = [ NodePath("../Liver") ]
 
 [node name="SofaAABoxROI" type="Spatial" parent="."]
 transform = Transform( 11.9618, 0, 0, 0, 4.06812, 0, 0, 0, 18.4826, 0, 19.6922, 6.36343 )
+visible = false
 script = ExtResource( 8 )
 
 [node name="SofaSphereROI" type="Spatial" parent="."]
 transform = Transform( 7.78616, 0, 0, 0, 7.78616, 0, 0, 0, 7.78616, -2.05169, 112.487, 53.845 )
+visible = false
 script = ExtResource( 9 )
 
 [node name="SofaFixedConstraint" type="Spatial" parent="."]
 transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+visible = false
 script = ExtResource( 7 )
 region_of_interest = NodePath("../SofaSphereROI")
 targets = [ NodePath("../Rope") ]
@@ -106,7 +118,8 @@ mechanical/physics_object_properties/soft_body = true
 mechanical/physics_object_properties/soft_body_properties/carving_surface = false
 mechanical/physics_object_properties/soft_body_properties/poisson_ratio = 0.4
 mechanical/physics_object_properties/soft_body_properties/youngs_modulus = 10000.0
-visual/color = Color( 0.5, 0.5, 0.5, 1 )
+visual/color = Color( 1, 1, 1, 1 )
+visual/texture = "res://textures/cpu_example.jpg"
 
 [node name="Floor" type="Spatial" parent="."]
 transform = Transform( -400.589, 2.9888e-06, 0, -3.50206e-05, -34.1879, 0, 0, 0, 9.6943, 0, -27.9729, 0 )
@@ -119,22 +132,24 @@ mechanical/physics_object_properties/mass = 1.0
 mechanical/physics_object_properties/soft_body = false
 mechanical/physics_object_properties/rigid_body_properties/carving_tool = false
 visual/color = Color( 0.5, 0.5, 0.5, 1 )
+visual/texture = "None"
 
 [node name="Rope" type="Spatial" parent="."]
 transform = Transform( 5.23125, 0, 0, 0, -2.28665e-07, -5.23125, 0, 5.23125, -2.28665e-07, 0, 66.4905, 53.796 )
+visible = false
 script = ExtResource( 2 )
-geometry/visual_mesh = ExtResource( 4 )
+geometry/visual_mesh = SubResource( 6 )
 mechanical/physics_object = true
 mechanical/physics_object_properties/movable = true
 mechanical/physics_object_properties/mass = 1.0
-mechanical/physics_object_properties/soft_body = true
-mechanical/physics_object_properties/soft_body_properties/carving_surface = false
-mechanical/physics_object_properties/soft_body_properties/poisson_ratio = 0.4
-mechanical/physics_object_properties/soft_body_properties/youngs_modulus = 10000.0
+mechanical/physics_object_properties/soft_body = false
+mechanical/physics_object_properties/rigid_body_properties/carving_tool = false
 visual/color = Color( 0.5, 0.5, 0.5, 1 )
+visual/texture = "None"
 
 [node name="SofaAttachConstraint3" type="Spatial" parent="."]
 transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+visible = false
 script = ExtResource( 6 )
 object_1 = NodePath("../Star")
 object_2 = NodePath("../Rope")
@@ -142,11 +157,13 @@ attach_distance = 1.0
 
 [node name="SofaObject" type="Spatial" parent="."]
 transform = Transform( 0.276562, 0, 0, 0, 0.276562, 0, 0, 0, 0.276562, 0, 39.3994, 0 )
+visible = false
 script = ExtResource( 2 )
-geometry/visual_mesh = ExtResource( 5 )
+geometry/visual_mesh = SubResource( 7 )
 mechanical/physics_object = true
 mechanical/physics_object_properties/movable = true
 mechanical/physics_object_properties/mass = 1.0
 mechanical/physics_object_properties/soft_body = false
-mechanical/physics_object_properties/rigid_body_properties/carving_tool = true
+mechanical/physics_object_properties/rigid_body_properties/carving_tool = false
 visual/color = Color( 0.5, 0.5, 0.5, 1 )
+visual/texture = "None"
