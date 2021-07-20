@@ -2,8 +2,8 @@ tool
 extends Spatial
 const XMLSceneTree = preload("res://addons/sofa_scene_creator/xml_scene_tree.gd")
 
-export(Array, NodePath) var fixed_constraints
-export(Array, NodePath) var bidirectional_attach_constraints
+#export(Array, NodePath) var fixed_constraints
+#export(Array, NodePath) var bidirectional_attach_constraints
 
 var physics_object : bool = true
 var movable : bool = true
@@ -65,6 +65,16 @@ func _get(property):
 
 # See GODOT reference https://docs.godotengine.org/en/stable/classes/class_object.html
 func _set(property, value):
+	print("set: ", property, " ", value)
+	
+	if property == "scale":
+		scale = value
+	if property == "rotation_degrees":
+		rotation_degrees = value
+	if property == "translation":
+		translation = value
+	
+	
 	if property == "mechanical/physics_object":
 		physics_object = value
 		property_list_changed_notify()
@@ -303,13 +313,19 @@ func generate_gmsh_mesh():
 			print("  Set the gmsh binary path in the root node.")
 			print("  [sudo apt install gmsh]")
 
+
+
 # Attach nodes for rigid-bodies (also edit rigid-body if you edit this)
 func add_rigid_body_subtree(r):
-	
+	#TODO Still not working, IdentityMapping is the issue
 	r.add_child("EulerImplicitSolver").add_properties({"rayleighStiffness":"0.01", "rayleighMass":"0.1"})
-	r.add_child("CGLinearSolver").add_properties({"iterations":10, "threshold":1.0e-9, "tolerance":1.0e-9})
+	r.add_child("CGLinearSolver").add_properties({"iterations":25, "threshold":1.0e-9, "tolerance":1.0e-9})
 	
-	r.add_child("MechanicalObject").add_properties({"template":"Rigid3d", "scale":1.0})
+	r.add_child("MeshObjLoader").add_properties({"name":"loader", "filename":get_path_to_visual_mesh(),"scale3d":scale, "rotation":rotation_degrees, "translation":translation})
+	#r.add_child("MeshObjLoader").add_properties({"name":"loader", "filename":get_path_to_visual_mesh()})
+	
+	#r.add_child("MechanicalObject").add_properties({"name":"dofs","src":"@loader","template":"Vec3d"})
+	r.add_child("MechanicalObject").add_properties({"name":"dofs","template":"Rigid3d"})
 	r.add_child("UniformMass").add_properties({"totalMass":mass})
 	#r.add_child("DiagonalMass").add_properties({"totalMass":mass})
 	r.add_child("UncoupledConstraintCorrection")
@@ -323,18 +339,19 @@ func add_rigid_body_subtree(r):
 	#<MeshObjLoader name="meshVisualLoader" filename="mesh/torus.obj"/>
 	#<OglModel name="Visual" src="@meshVisualLoader" color="gray" scale="1.0"/>
 	#<RigidMapping input="@.." output="@Visual"/>
-	vis.add_child("MeshObjLoader").add_properties({"name":"VisualMeshLoader", "filename":get_path_to_visual_mesh(), "scale3d":scale, "rotation":rotation_degrees, "translation":translation})
+	#vis.add_child("MeshObjLoader").add_properties({"name":"VisualMeshLoader", "filename":get_path_to_visual_mesh(), "scale3d":scale, "rotation":rotation_degrees, "translation":translation})
 	if(visual_texture != "None"):
-		vis.add_child("OglModel").add_properties({"name":"VisualModel", "src":"@VisualMeshLoader", "scale":1.0, "color":visual_color, "texturename":get_path_to_visual_texture()})
+		vis.add_child("OglModel").add_properties({"name":"VisualModel", "src":"@../loader", "scale":1.0, "color":visual_color, "texturename":get_path_to_visual_texture()})
 	else:
-		vis.add_child("OglModel").add_properties({"name":"VisualModel", "src":"@VisualMeshLoader", "scale":1.0, "color":visual_color})
-	vis.add_child("RigidMapping").add_properties({"input":"@..", "output":"@VisualModel"})
+		vis.add_child("OglModel").add_properties({"name":"VisualModel", "src":"@../loader", "scale":1.0, "color":visual_color})
+	#vis.add_child("IdentityMapping").add_properties({"input":"@../dofs", "output":"@VisualModel"})
+	vis.add_child("RigidMapping").add_properties({"input":"@../dofs", "output":"@VisualModel", "applyRestPosition":"True"})
 	
 	var col = r.add_child("Node").add_properties({"name":"Collision"})
-	col.add_child("MeshObjLoader").add_properties({"name":"CollisionMeshLoader", "filename":get_path_to_visual_mesh(), "scale3d":scale, "rotation":rotation_degrees, "translation":translation})
-	col.add_child("MeshTopology").add_properties({"src":"@CollisionMeshLoader"})
-	col.add_child("MechanicalObject").add_properties({"scale":1.0})
-	col.add_child("UncoupledConstraintCorrection")
+	#col.add_child("MeshObjLoader").add_properties({"name":"CollisionMeshLoader", "filename":get_path_to_visual_mesh(), "scale3d":scale, "rotation":rotation_degrees, "translation":translation})
+	col.add_child("MeshTopology").add_properties({"src":"@../loader"})
+	col.add_child("MechanicalObject").add_properties({"name":"dofsc","scale":1.0, "src":"@../loader"})
+	
 	
 	var tags = ""
 	if rigid_body_is_carving_tool == true:
@@ -343,8 +360,8 @@ func add_rigid_body_subtree(r):
 	col.add_child("TriangleCollisionModel").add_properties({"contactStiffness":10, "tags":tags})
 	col.add_child("LineCollisionModel").add_properties({"contactStiffness":10, "tags":tags})
 	col.add_child("PointCollisionModel").add_properties({"contactStiffness":10, "tags":tags})
+	#col.add_child("IdentityMapping").add_properties({"input":"@../dofs", "output":"@dofsc"})
 	col.add_child("RigidMapping")
-
 # Attach nodes for soft-bodies (also edit soft-body if you edit this)
 func add_soft_body_subtree(r):
 	# Generate gmsh file if the current visual mesh is newer than the gmsh

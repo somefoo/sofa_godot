@@ -23,9 +23,9 @@ static func is_valid_sofa_ROI(obj, verbose : bool = false) -> bool:
 		return false
 	return true
 
-# Utility function: Returns true if an object is a sofa object (specific node)
+# Utility function: Returns true if an object is a sofa soft body object (specific node)
 #					Returns false if not
-static func is_valid_sofa_object(obj, verbose : bool = false) -> bool:
+static func is_valid_sofa_softbody_object(obj, verbose : bool = false) -> bool:
 	if(!is_sofa_node(obj)):
 		return false
 	elif (obj.get_script().get_path().split('/')[-1].find("sofa_object") != 0):
@@ -33,6 +33,30 @@ static func is_valid_sofa_object(obj, verbose : bool = false) -> bool:
 		return false
 	elif(obj.soft_body == false):
 		if (verbose): print('Object is not a soft body.')
+		return false
+	return true
+	
+	
+# Utility function: Returns true if an object is a sofa rigid body object (specific node)
+#					Returns false if not
+static func is_valid_sofa_rigid_object(obj, verbose : bool = false) -> bool:
+	if(!is_sofa_node(obj)):
+		return false
+	elif (obj.get_script().get_path().split('/')[-1].find("sofa_object") != 0):
+		if (verbose): print('No script containing the word "sofa_object" attached.')
+		return false
+	elif(obj.soft_body == true):
+		if (verbose): print('Object is not a rigid body.')
+		return false
+	return true
+
+# Utility function: Returns true if an object is a sofa object (specific node)
+#					Returns false if not
+static func is_valid_sofa_object(obj, verbose : bool = false) -> bool:
+	if(!is_sofa_node(obj)):
+		return false
+	elif (obj.get_script().get_path().split('/')[-1].find("sofa_object") != 0):
+		if (verbose): print('No script containing the word "sofa_object" attached.')
 		return false
 	return true
 

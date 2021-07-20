@@ -1,0 +1,79 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://addons/sofa_scene_creator/sofa_root.gd" type="Script" id=1]
+[ext_resource path="res://meshes/cube.obj" type="ArrayMesh" id=2]
+[ext_resource path="res://addons/sofa_scene_creator/sofa_object.gd" type="Script" id=3]
+[ext_resource path="res://addons/sofa_scene_creator/sofa_bilateral_interaction_constraint.gd" type="Script" id=4]
+
+[node name="SofaRoot" type="Node"]
+script = ExtResource( 1 )
+gravity = Vector3( 0, -900.81, 0 )
+sofa_binary_path = "/home/pit/repos/sofa/build/v2006/bin/runSofa"
+gmsh_binary_path = "/usr/bin/gmsh"
+ctmconv_binary_path = "/usr/bin/ctmconv"
+
+[node name="SofaObject" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6776, 0 )
+script = ExtResource( 3 )
+geometry/visual_mesh = ExtResource( 2 )
+mechanical/physics_object = true
+mechanical/physics_object_properties/movable = false
+mechanical/physics_object_properties/mass = 1.0
+mechanical/physics_object_properties/soft_body = false
+mechanical/physics_object_properties/rigid_body_properties/carving_tool = false
+visual/color = Color( 0.5, 0.5, 0.5, 1 )
+visual/texture = "None"
+
+[node name="SofaObject2" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.03844, 0 )
+script = ExtResource( 3 )
+geometry/visual_mesh = ExtResource( 2 )
+mechanical/physics_object = true
+mechanical/physics_object_properties/movable = true
+mechanical/physics_object_properties/mass = 1.0
+mechanical/physics_object_properties/soft_body = false
+mechanical/physics_object_properties/rigid_body_properties/carving_tool = false
+visual/color = Color( 0.5, 0.5, 0.5, 1 )
+visual/texture = "None"
+
+[node name="SofaObject3" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.40404, 0 )
+script = ExtResource( 3 )
+geometry/visual_mesh = ExtResource( 2 )
+mechanical/physics_object = true
+mechanical/physics_object_properties/movable = true
+mechanical/physics_object_properties/mass = 1.0
+mechanical/physics_object_properties/soft_body = false
+mechanical/physics_object_properties/rigid_body_properties/carving_tool = false
+visual/color = Color( 0.5, 0.5, 0.5, 1 )
+visual/texture = "None"
+
+[node name="SofaObject4" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -9.1878, 0 )
+script = ExtResource( 3 )
+geometry/visual_mesh = ExtResource( 2 )
+mechanical/physics_object = true
+mechanical/physics_object_properties/movable = true
+mechanical/physics_object_properties/mass = 1.0
+mechanical/physics_object_properties/soft_body = false
+mechanical/physics_object_properties/rigid_body_properties/carving_tool = false
+visual/color = Color( 0.5, 0.5, 0.5, 1 )
+visual/texture = "None"
+
+[node name="SofaBilateralInteractionConstraint" type="Spatial" parent="."]
+transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+script = ExtResource( 4 )
+object_1 = NodePath("../SofaObject")
+object_2 = NodePath("../SofaObject2")
+
+[node name="SofaBilateralInteractionConstraint2" type="Spatial" parent="."]
+transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -3.61478, 0 )
+script = ExtResource( 4 )
+object_1 = NodePath("../SofaObject2")
+object_2 = NodePath("../SofaObject3")
+
+[node name="SofaBilateralInteractionConstraint3" type="Spatial" parent="."]
+transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -7.29519, 0 )
+script = ExtResource( 4 )
+object_1 = NodePath("../SofaObject3")
+object_2 = NodePath("../SofaObject4")

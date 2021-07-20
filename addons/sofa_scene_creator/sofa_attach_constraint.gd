@@ -14,8 +14,8 @@ func get_xml_tree():
 	#TODO remove hard coded "dofs" name?
 	var o1 = SofaUtility.get_sofa_absolute_name(get_node(object_1))
 	var o2 = SofaUtility.get_sofa_absolute_name(get_node(object_2))
-	if(!SofaUtility.is_valid_sofa_object(get_node(object_1)) || !SofaUtility.is_valid_sofa_object(get_node(object_2))):
-		assert(false, "Error: both objects in an attach constraint must be Soft Bodies") # because SOFA doesn't like Rigidbodies
+	if(!SofaUtility.is_valid_sofa_softbody_object(get_node(object_1)) || !SofaUtility.is_valid_sofa_softbody_object(get_node(object_2))):
+		assert(false, "Error: both objects in an attach constraint must be Soft Bodies (PLUGIN limitation)") # because SOFA doesn't like Rigidbodies
 	
 	var o1d = o1 + "/dofs"
 	var o2d = o2 + "/dofs"
