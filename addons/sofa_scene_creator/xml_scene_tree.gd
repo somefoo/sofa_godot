@@ -72,7 +72,7 @@ func to_xml_from_node(node, depth = 0):
 
 
 	var xml_string = ''
-	var prefix = ' '.repeat(depth)
+	var prefix = '\t'.repeat(depth)
 	if(node._children.size() == 0):
 		xml_string += prefix + '<' + node._type + ' ' + properties_string + '/>'
 	else:
