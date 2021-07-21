@@ -1,4 +1,7 @@
 extends Reference
+
+const XMLSceneTree = preload("res://addons/sofa_scene_creator/xml_scene_tree.gd")
+
 # Utility function: Returns true  if an object is a sofa node
 #					Returns false if not
 static func is_sofa_node(obj, verbose : bool = false) -> bool:
@@ -67,3 +70,8 @@ static func get_sofa_absolute_name(obj) -> String:
 	else:
 		assert(false, "Error, looking up sofa name of non-sofa object.")
 		return ""
+
+# Utility function: Adds a requirement to an object
+static func add_requirement(obj : Node, requirement : XMLSceneTree):
+	obj.get_tree().root.get_child(0).add_requirement_to_node(obj, requirement)
+	pass

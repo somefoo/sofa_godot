@@ -22,10 +22,10 @@ func get_xml_tree():
 		var roi_root = xml_tree_constraint.get_root()
 		roi_root.add_properties({"name":get_name(), "indices":SofaUtility.get_sofa_absolute_name(get_node(t)) + "/" + roi.get_name() + ".indices"})
 		if(!SofaUtility.is_valid_sofa_softbody_object(get_node(t))):
-			assert(false, "Error: objects in an fixed constraint must be Rigid Body (PLUGIN limitation)") # because SOFA doesn't like Rigidbodies
+			assert(false, "Error: objects in an fixed constraint must be Soft Body (PLUGIN limitation)") # because SOFA doesn't like Rigidbodies
 			
-		get_tree().root.get_child(0).add_requirement_to_node(get_node(t), roi.get_xml_tree_custom())
-		get_tree().root.get_child(0).add_requirement_to_node(get_node(t), xml_tree_constraint)
+		SofaUtility.add_requirement(get_node(t), roi.get_xml_tree_custom())
+		SofaUtility.add_requirement(get_node(t), xml_tree_constraint)
 	
 	
 	# No return here, the requirments are post-attached to the target nodes

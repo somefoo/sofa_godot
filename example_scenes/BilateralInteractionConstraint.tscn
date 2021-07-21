@@ -7,7 +7,6 @@
 
 [node name="SofaRoot" type="Node"]
 script = ExtResource( 1 )
-gravity = Vector3( 0, -900.81, 0 )
 sofa_binary_path = "/home/pit/repos/sofa/build/v2006/bin/runSofa"
 gmsh_binary_path = "/usr/bin/gmsh"
 ctmconv_binary_path = "/usr/bin/ctmconv"

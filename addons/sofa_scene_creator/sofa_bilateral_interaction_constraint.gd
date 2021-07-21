@@ -24,8 +24,8 @@ func get_xml_tree():
 	roi_root.add_child("MechanicalObject").add_properties({"name":"point", "template":"Vec3d", "position":translation})
 	roi_root.add_child("RigidMapping")
 	
-	get_tree().root.get_child(0).add_requirement_to_node(get_node(object_1), xml_tree_constraint)
-	get_tree().root.get_child(0).add_requirement_to_node(get_node(object_2), xml_tree_constraint)
+	SofaUtility.add_requirement(get_node(object_1), xml_tree_constraint)
+	SofaUtility.add_requirement(get_node(object_2), xml_tree_constraint)
 	
 	#var o1d = o1 + "/dofs"
 	#var o2d = o2 + "/dofs"
