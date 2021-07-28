@@ -2,6 +2,13 @@ extends Reference
 
 const XMLSceneTree = preload("res://addons/sofa_scene_creator/xml_scene_tree.gd")
 
+const COLOR_TARGET_OBJECT : Color =	Color(0.5, 0.5, 0.0, 0.3)
+const COLOR_TARGET_ROI : Color = 	Color(1.0, 0.0, 0.0, 0.3)
+const COLOR_YELLOW : Color = 		Color(1.0, 1.0, 0.0, 0.5)
+const COLOR_PURPLE : Color = 		Color(1.0, 0.0, 1.0, 0.5)
+const COLOR_TURQUOISE : Color = 	Color(0.0, 1.0, 1.0, 0.5)
+const COLOR_BLACK : Color = 		Color(0.0, 0.0, 0.0, 0.5)
+const COLOR_WHITE : Color = 		Color(1.0, 1.0, 1.0, 0.5)
 # Utility function: Returns true  if an object is a sofa node
 #					Returns false if not
 static func is_sofa_node(obj, verbose : bool = false) -> bool:
@@ -74,4 +81,18 @@ static func get_sofa_absolute_name(obj) -> String:
 # Utility function: Adds a requirement to an object
 static func add_requirement(obj : Node, requirement : XMLSceneTree):
 	obj.get_tree().root.get_child(0).add_requirement_to_node(obj, requirement)
-	pass
+
+static func draw_line(obj : Node, p0, p1, color : Color = Color(1,0,0,1)):
+	if(obj.is_visible()):
+		var p = obj
+		# Bad, what if the root is not called SofaRoot?
+		while(p.name != "SofaRoot"):
+			p = p.get_parent()
+		
+		p.draw_line(p0, p1, color)
+	
+static func draw_cross(obj : Node, p0, color : Color = Color(1,0,0,1)):
+	var s = 1
+	draw_line(obj, p0 - Vector3(1,0,0) * s, p0 + Vector3(1,0,0) * s, color)
+	draw_line(obj, p0 - Vector3(0,1,0) * s, p0 + Vector3(0,1,0) * s, color)
+	draw_line(obj, p0 - Vector3(0,0,1) * s, p0 + Vector3(0,0,1) * s, color)

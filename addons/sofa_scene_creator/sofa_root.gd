@@ -2,7 +2,7 @@ tool
 extends Node
 const XMLSceneTree = preload("res://addons/sofa_scene_creator/xml_scene_tree.gd")
 const SofaUtility = preload("res://addons/sofa_scene_creator/sofa_utility.gd")
-
+var DebugDraw = preload("res://addons/sofa_scene_creator/debug_draw.gd").new() 
 #enum UNIT {KILOGRAM_METER, KILOGRAM_MILIMETER}
 #export(UNIT) var unit = UNIT.KILOGRAM_MILIMETER
 
@@ -20,6 +20,7 @@ export(bool) var print_xml_output = false
 export(float) var time_step = 0.02
 
 func _enter_tree():
+	add_child(DebugDraw)
 	#Fix godot prinout limit:
 	if(Engine.is_editor_hint()):
 		ProjectSettings.set_setting("network/limits/debugger_stdout/max_chars_per_second", 2048*100)
@@ -256,3 +257,6 @@ func _ready():
 			print("  Set the sofa binary path in the root node.")
 		
 		get_tree().quit()
+
+func draw_line(p0, p1, color : Color = Color(1,0,0,1)):
+	DebugDraw.draw_line(p0, p1, color)

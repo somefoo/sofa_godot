@@ -60,19 +60,19 @@ visual/color = Color( 0.5, 0.5, 0.5, 1 )
 visual/texture = "None"
 
 [node name="SofaBilateralInteractionConstraint" type="Spatial" parent="."]
-transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.88531, 0, 0 )
 script = ExtResource( 4 )
 object_1 = NodePath("../SofaObject")
 object_2 = NodePath("../SofaObject2")
 
 [node name="SofaBilateralInteractionConstraint2" type="Spatial" parent="."]
-transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -3.61478, 0 )
+transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -3.61478, -1.85772 )
 script = ExtResource( 4 )
 object_1 = NodePath("../SofaObject2")
 object_2 = NodePath("../SofaObject3")
 
 [node name="SofaBilateralInteractionConstraint3" type="Spatial" parent="."]
-transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -7.29519, 0 )
+transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -7.29519, 1.68566 )
 script = ExtResource( 4 )
 object_1 = NodePath("../SofaObject3")
 object_2 = NodePath("../SofaObject4")

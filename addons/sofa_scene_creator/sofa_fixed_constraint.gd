@@ -10,8 +10,12 @@ func _enter_tree():
 	pass
 
 func get_xml_tree():
+	
 	#TODO remove hard coded "dofs" name?
 	#TODO impl this correctly now and remove the is_valid stuff above
+
+	
+	
 	
 	var roi = get_node(region_of_interest)
 	assert(SofaUtility.is_valid_sofa_ROI(roi, true), "Error, the ROI select is not a valid ROI.")
@@ -32,6 +36,10 @@ func get_xml_tree():
 	return null
 
 func _process(delta):
+	if(region_of_interest != null):
+		for t in targets:
+			SofaUtility.draw_line(self, get_node(region_of_interest).translation, get_node(t).translation, SofaUtility.COLOR_TARGET_OBJECT)
+	
 	scale = Vector3(0,0,0)
 	translation = Vector3(0,0,0)
 	rotation = Vector3(0,0,0)

@@ -1,15 +1,14 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://meshes/star.obj" type="ArrayMesh" id=1]
 [ext_resource path="res://addons/sofa_scene_creator/sofa_object.gd" type="Script" id=2]
 [ext_resource path="res://addons/sofa_scene_creator/sofa_root.gd" type="Script" id=3]
-[ext_resource path="res://addons/sofa_scene_creator/sofa_box_constraint.gd" type="Script" id=4]
+[ext_resource path="res://addons/sofa_scene_creator/sofa_fixed_plane_constraint.gd" type="Script" id=4]
 [ext_resource path="res://meshes/rope_holder.obj" type="ArrayMesh" id=5]
 [ext_resource path="res://addons/sofa_scene_creator/sofa_attach_constraint.gd" type="Script" id=6]
 [ext_resource path="res://addons/sofa_scene_creator/sofa_fixed_constraint.gd" type="Script" id=7]
 [ext_resource path="res://addons/sofa_scene_creator/sofa_aa_box_roi.gd" type="Script" id=8]
 [ext_resource path="res://addons/sofa_scene_creator/sofa_sphere_roi.gd" type="Script" id=9]
-[ext_resource path="res://meshes/gallbladder.obj" type="ArrayMesh" id=10]
 
 [sub_resource type="CubeMesh" id=1]
 
@@ -153,19 +152,9 @@ object_1 = NodePath("../Star")
 object_2 = NodePath("../Rope")
 attach_distance = 1.0
 
-[node name="SofaBoxConstraint" type="Spatial" parent="."]
-transform = Transform( 7.71247, 0, 0, 0, 10.0006, 0, 0, 0, 10.1619, 0, 0, 32.7762 )
+[node name="SofaFixedPlaneConstraint" type="Spatial" parent="."]
+transform = Transform( 290.066, 1.35739, -73.7785, -50.8646, 17.7552, -125.798, 57.2229, 8.90163, 262.167, 0.678697, 8.8776, 4.45081 )
 script = ExtResource( 4 )
 targets = [ NodePath("../Star") ]
-
-[node name="SofaObject" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 55.0327, 15.7563, 7.54262 )
-script = ExtResource( 2 )
-geometry/visual_mesh = ExtResource( 10 )
-mechanical/physics_object = true
-mechanical/physics_object_properties/movable = true
-mechanical/physics_object_properties/mass = 1.0
-mechanical/physics_object_properties/soft_body = false
-mechanical/physics_object_properties/rigid_body_properties/carving_tool = false
-visual/color = Color( 0.5, 0.5, 0.5, 1 )
-visual/texture = "None"
+distance_max = 19.908
+visualisation_size = 300.0
