@@ -34,6 +34,14 @@ func _enter_tree():
 
 # See GODOT reference https://docs.godotengine.org/en/stable/classes/class_object.html
 func _get(property):
+	if property == "scale":
+		return scale
+	if property == "rotation_degrees":
+		return rotation_degrees
+	if property == "translation":
+		return translation
+	
+	
 	if property == "mechanical/physics_object":
 		return physics_object
 	if property == "mechanical/physics_object_properties/movable":

@@ -9,6 +9,9 @@ const COLOR_PURPLE : Color = 		Color(1.0, 0.0, 1.0, 0.5)
 const COLOR_TURQUOISE : Color = 	Color(0.0, 1.0, 1.0, 0.5)
 const COLOR_BLACK : Color = 		Color(0.0, 0.0, 0.0, 0.5)
 const COLOR_WHITE : Color = 		Color(1.0, 1.0, 1.0, 0.5)
+const COLOR_RED : Color = 			Color(1.0, 0.0, 0.0, 0.5)
+const COLOR_GREEN : Color = 		Color(0.0, 1.0, 0.0, 0.5)
+const COLOR_BLUE : Color = 			Color(0.0, 0.0, 1.0, 0.5)
 # Utility function: Returns true  if an object is a sofa node
 #					Returns false if not
 static func is_sofa_node(obj, verbose : bool = false) -> bool:
