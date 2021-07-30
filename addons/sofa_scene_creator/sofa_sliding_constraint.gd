@@ -120,7 +120,7 @@ func get_xml_tree():
 	roi_root.add_properties({"name":get_name()})
 	if(_relative_attachment_1):
 		var between_point = (line_start*(_relative_attachment_1) + line_end * (1-_relative_attachment_1))
-		roi_root.add_child("MechanicalObject").add_properties({"name":"points", "template":"Vec3d", "position":between_point})
+		roi_root.add_child("MechanicalObject").add_properties({"name":"points", "template":"Vec3d", "position":(between_point - get_node(object_1).translation)})
 		roi_root.add_child("RigidMapping")
 	
 	SofaUtility.add_requirement(get_node(object_1), xml_tree_constraint)
@@ -137,6 +137,13 @@ func get_xml_tree():
 	
 	#TODO the order of the two created objects below is not correct
 	
+	r.add_child("MechanicalObject").add_properties({
+		"name":"points",
+		"template":"Vec3d",
+		"position":position_string,
+		"free_position":position_string,
+	})
+	
 	r.add_child("SlidingConstraint").add_properties({
 		"object1":o1 + "/" + self.name + "/points",
 		"object2":"@points",
@@ -150,12 +157,7 @@ func get_xml_tree():
 	})
 	
 	
-	r.add_child("MechanicalObject").add_properties({
-		"name":"points",
-		"template":"Vec3d",
-		"position":position_string,
-		"free_position":position_string,
-	})
+
 	
 
 	
