@@ -55,7 +55,7 @@ func _process(delta):
 	if(!object_1.is_empty() && !object_2.is_empty()):
 		SofaUtility.draw_line(self, translation, get_node(object_1).translation, SofaUtility.COLOR_TARGET_OBJECT)
 		SofaUtility.draw_line(self, translation, get_node(object_2).translation, SofaUtility.COLOR_TARGET_OBJECT)
-	SofaUtility.draw_cross(self, translation, SofaUtility.COLOR_BLACK)
+	SofaUtility.draw_cross(self, translation, SofaUtility.COLOR_TURQUOISE)
 	scale = Vector3(0,0,0)
 	#translation = Vector3(0,0,0)
 	rotation = Vector3(0,0,0)

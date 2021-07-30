@@ -1,3 +1,6 @@
+# Note, this was actually made to allow two-point attachment
+# but this feature is disabled (as it isn't working as expected)
+
 tool
 extends Spatial 
 const XMLSceneTree = preload("res://addons/sofa_scene_creator/xml_scene_tree.gd")
@@ -71,12 +74,12 @@ func _set(property, value):
 func _get_property_list():
 	var property_list = []
 	
-	property_list.append({
-		"hint": PROPERTY_HINT_NONE,
-		"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
-		"name": "two_point_attachment",
-		"type": TYPE_BOOL
-	})
+#	property_list.append({
+#		"hint": PROPERTY_HINT_NONE,
+#		"usage": PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_STORAGE,
+#		"name": "two_point_attachment",
+#		"type": TYPE_BOOL
+#	})
 	
 	if(_two_point_attachment):
 		property_list.append({
@@ -118,7 +121,14 @@ func get_xml_tree():
 	var xml_tree_constraint = XMLSceneTree.new()
 	var roi_root = xml_tree_constraint.get_root()
 	roi_root.add_properties({"name":get_name()})
-	if(_relative_attachment_1):
+	if(_two_point_attachment):
+		var between_point1 = (line_start*(_relative_attachment_1) + line_end * (1-_relative_attachment_1)) - get_node(object_1).translation
+		var between_point2 = (line_start*(_relative_attachment_2) + line_end * (1-_relative_attachment_2)) - get_node(object_1).translation
+		var position_string : String = ""
+		position_string = str(between_point1[0]) + " " + str(between_point1[1]) + " " + str(between_point1[2]) + '&#x09;' + str(between_point2[0]) + " " + str(between_point2[1]) + " " + str(between_point2[2])
+		roi_root.add_child("MechanicalObject").add_properties({"name":"points", "template":"Vec3d", "position":position_string})
+		roi_root.add_child("RigidMapping")
+	else:
 		var between_point = (line_start*(_relative_attachment_1) + line_end * (1-_relative_attachment_1))
 		roi_root.add_child("MechanicalObject").add_properties({"name":"points", "template":"Vec3d", "position":(between_point - get_node(object_1).translation)})
 		roi_root.add_child("RigidMapping")
@@ -167,7 +177,11 @@ func get_xml_tree():
 
 func _process(delta):
 	if(!object_1.is_empty()):
-		SofaUtility.draw_line(self, (line_start*(_relative_attachment_1) + line_end * (1-_relative_attachment_1)), get_node(object_1).translation, SofaUtility.COLOR_TARGET_OBJECT)
+		if(_two_point_attachment):
+			SofaUtility.draw_line(self, (line_start*(_relative_attachment_1) + line_end * (1-_relative_attachment_1)), get_node(object_1).translation, SofaUtility.COLOR_TARGET_OBJECT)
+			SofaUtility.draw_line(self, (line_start*(_relative_attachment_2) + line_end * (1-_relative_attachment_2)), get_node(object_1).translation, SofaUtility.COLOR_TARGET_OBJECT)
+		else:
+			SofaUtility.draw_line(self, (line_start*(_relative_attachment_1) + line_end * (1-_relative_attachment_1)), get_node(object_1).translation, SofaUtility.COLOR_TARGET_OBJECT)
 	SofaUtility.draw_cross(self, line_start, SofaUtility.COLOR_PURPLE)
 	SofaUtility.draw_cross(self, line_end, SofaUtility.COLOR_PURPLE)
 	SofaUtility.draw_line(self, line_start + Vector3(0,0.03,0), line_end + Vector3(0,0.03,0), SofaUtility.COLOR_PURPLE)

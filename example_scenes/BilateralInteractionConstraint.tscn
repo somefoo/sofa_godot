@@ -10,6 +10,7 @@ script = ExtResource( 1 )
 sofa_binary_path = "/home/pit/repos/sofa/build/v2006/bin/runSofa"
 gmsh_binary_path = "/usr/bin/gmsh"
 ctmconv_binary_path = "/usr/bin/ctmconv"
+time_step = 0.001
 
 [node name="SofaObject" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6776, 0 )

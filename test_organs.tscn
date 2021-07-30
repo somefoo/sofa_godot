@@ -168,7 +168,7 @@ visualisation_size = 300.0
 visualisation_lines = false
 
 [node name="RigidStar" type="Spatial" parent="."]
-transform = Transform( 0.375747, 0, 0, 0, 0.375747, 0, 0, 0, 0.375747, 4.89395, -6.22757, 1.41226 )
+transform = Transform( 0.375747, 0, 0, 0, 0.375747, 0, 0, 0, 0.375747, 8.12822, -4.64018, 0 )
 script = ExtResource( 2 )
 geometry/visual_mesh = ExtResource( 1 )
 mechanical/physics_object = true

@@ -1,0 +1,54 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://addons/sofa_scene_creator/sofa_object.gd" type="Script" id=1]
+[ext_resource path="res://addons/sofa_scene_creator/sofa_sliding_constraint.gd" type="Script" id=2]
+[ext_resource path="res://addons/sofa_scene_creator/sofa_root.gd" type="Script" id=4]
+[ext_resource path="res://meshes/star.obj" type="ArrayMesh" id=9]
+
+[node name="SofaRoot" type="Node"]
+script = ExtResource( 4 )
+gravity = Vector3( 0, -900, 0 )
+collision_distance = 1.0
+sofa_binary_path = "/home/pit/repos/sofa/build/v2006/bin/runSofa"
+gmsh_binary_path = "/usr/bin/gmsh"
+ctmconv_binary_path = "/usr/bin/ctmconv"
+print_sofa_output = true
+time_step = 0.001
+
+[node name="RigidStar" type="Spatial" parent="."]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 8, -4, 0 )
+script = ExtResource( 1 )
+geometry/visual_mesh = ExtResource( 9 )
+mechanical/physics_object = true
+mechanical/physics_object_properties/movable = true
+mechanical/physics_object_properties/mass = 1.0
+mechanical/physics_object_properties/soft_body = false
+mechanical/physics_object_properties/rigid_body_properties/carving_tool = false
+visual/color = Color( 0.5, 0.5, 0.5, 1 )
+visual/texture = "None"
+
+[node name="SofaSlidingConstraint" type="Spatial" parent="."]
+transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+script = ExtResource( 2 )
+object_1 = NodePath("../RigidStar")
+relative_attachment_1 = 0.5
+
+[node name="RigidStar2" type="Spatial" parent="."]
+transform = Transform( 0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 8, -4, 7.51368 )
+script = ExtResource( 1 )
+geometry/visual_mesh = ExtResource( 9 )
+mechanical/physics_object = true
+mechanical/physics_object_properties/movable = true
+mechanical/physics_object_properties/mass = 1.0
+mechanical/physics_object_properties/soft_body = false
+mechanical/physics_object_properties/rigid_body_properties/carving_tool = false
+visual/color = Color( 0.5, 0.5, 0.5, 1 )
+visual/texture = "None"
+
+[node name="SofaSlidingConstraint2" type="Spatial" parent="."]
+transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+script = ExtResource( 2 )
+object_1 = NodePath("../RigidStar2")
+line_start = Vector3( 0, 0, 12 )
+line_end = Vector3( 10, 0, 12 )
+relative_attachment_1 = 0.774
