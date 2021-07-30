@@ -18,14 +18,18 @@ func get_xml_tree():
 		assert(false, "Error: both objects in an bilateral interaction constraint must be Rigid Bodies (SOFA limitation)") # because SOFA doesn't like Rigidbodies
 	
 	
-	var xml_tree_constraint = XMLSceneTree.new()
-	var roi_root = xml_tree_constraint.get_root()
-	roi_root.add_properties({"name":get_name()})
-	roi_root.add_child("MechanicalObject").add_properties({"name":"point", "template":"Vec3d", "position":translation})
-	roi_root.add_child("RigidMapping")
+	var xml_tree_constraint1 = XMLSceneTree.new()
+	var xml_tree_constraint2 = XMLSceneTree.new()
+	xml_tree_constraint1.get_root().add_properties({"name":get_name()})
+	xml_tree_constraint2.get_root().add_properties({"name":get_name()})
+	xml_tree_constraint1.get_root().add_child("MechanicalObject").add_properties({"name":"point", "template":"Vec3d", "position":(translation - get_node(object_1).translation)})
+	xml_tree_constraint2.get_root().add_child("MechanicalObject").add_properties({"name":"point", "template":"Vec3d", "position":(translation - get_node(object_2).translation)})
+	xml_tree_constraint1.get_root().add_child("RigidMapping")
+	xml_tree_constraint2.get_root().add_child("RigidMapping")
 	
-	SofaUtility.add_requirement(get_node(object_1), xml_tree_constraint)
-	SofaUtility.add_requirement(get_node(object_2), xml_tree_constraint)
+	
+	SofaUtility.add_requirement(get_node(object_1), xml_tree_constraint1)
+	SofaUtility.add_requirement(get_node(object_2), xml_tree_constraint2)
 	
 	#var o1d = o1 + "/dofs"
 	#var o2d = o2 + "/dofs"
