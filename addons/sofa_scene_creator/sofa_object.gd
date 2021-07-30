@@ -329,11 +329,11 @@ func add_rigid_body_subtree(r):
 	r.add_child("EulerImplicitSolver").add_properties({"rayleighStiffness":"0.01", "rayleighMass":"0.1"})
 	r.add_child("CGLinearSolver").add_properties({"iterations":25, "threshold":1.0e-9, "tolerance":1.0e-9})
 	
-	r.add_child("MeshObjLoader").add_properties({"name":"loader", "filename":get_path_to_visual_mesh(),"scale3d":scale, "rotation":rotation_degrees, "translation":translation})
+	r.add_child("MeshObjLoader").add_properties({"name":"loader", "filename":get_path_to_visual_mesh(), "scale3d":scale})
 	#r.add_child("MeshObjLoader").add_properties({"name":"loader", "filename":get_path_to_visual_mesh()})
 	
 	#r.add_child("MechanicalObject").add_properties({"name":"dofs","src":"@loader","template":"Vec3d"})
-	r.add_child("MechanicalObject").add_properties({"name":"dofs","template":"Rigid3d"})
+	r.add_child("MechanicalObject").add_properties({"name":"dofs","template":"Rigid3d","rotation":rotation_degrees, "translation":translation})
 	r.add_child("UniformMass").add_properties({"totalMass":mass})
 	#r.add_child("DiagonalMass").add_properties({"totalMass":mass})
 	r.add_child("UncoupledConstraintCorrection")
@@ -349,16 +349,16 @@ func add_rigid_body_subtree(r):
 	#<RigidMapping input="@.." output="@Visual"/>
 	#vis.add_child("MeshObjLoader").add_properties({"name":"VisualMeshLoader", "filename":get_path_to_visual_mesh(), "scale3d":scale, "rotation":rotation_degrees, "translation":translation})
 	if(visual_texture != "None"):
-		vis.add_child("OglModel").add_properties({"name":"VisualModel", "src":"@../loader", "scale":1.0, "color":visual_color, "texturename":get_path_to_visual_texture()})
+		vis.add_child("OglModel").add_properties({"name":"VisualModel", "filename":get_path_to_visual_mesh(), "color":visual_color, "texturename":get_path_to_visual_texture(), "scale3d":scale})
 	else:
-		vis.add_child("OglModel").add_properties({"name":"VisualModel", "src":"@../loader", "scale":1.0, "color":visual_color})
+		vis.add_child("OglModel").add_properties({"name":"VisualModel", "filename":get_path_to_visual_mesh(), "color":visual_color, "scale3d":scale})
 	#vis.add_child("IdentityMapping").add_properties({"input":"@../dofs", "output":"@VisualModel"})
 	vis.add_child("RigidMapping").add_properties({"input":"@../dofs", "output":"@VisualModel", "applyRestPosition":"True"})
 	
 	var col = r.add_child("Node").add_properties({"name":"Collision"})
 	#col.add_child("MeshObjLoader").add_properties({"name":"CollisionMeshLoader", "filename":get_path_to_visual_mesh(), "scale3d":scale, "rotation":rotation_degrees, "translation":translation})
 	col.add_child("MeshTopology").add_properties({"src":"@../loader"})
-	col.add_child("MechanicalObject").add_properties({"name":"dofsc","scale":1.0, "src":"@../loader"})
+	col.add_child("MechanicalObject").add_properties({"name":"dofsc", "src":"@../loader"})
 	
 	
 	var tags = ""
