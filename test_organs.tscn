@@ -109,7 +109,6 @@ targets = [ NodePath("../Rope") ]
 
 [node name="Star" type="Spatial" parent="."]
 transform = Transform( 2.23892, 0, 0, 0, 2.23892, 0, 0, 0, 2.23892, -0.156199, 0.448045, 53.9469 )
-visible = false
 script = ExtResource( 2 )
 geometry/visual_mesh = ExtResource( 1 )
 mechanical/physics_object = true
@@ -160,7 +159,6 @@ attach_distance = 1.0
 
 [node name="SofaFixedPlaneConstraint" type="Spatial" parent="."]
 transform = Transform( 290.066, 1.35739, -73.7785, -50.8646, 17.7552, -125.798, 57.2229, 8.90163, 262.167, 0.678697, 8.8776, 4.45081 )
-visible = false
 script = ExtResource( 4 )
 targets = [ NodePath("../Star") ]
 distance_max = 19.908
@@ -169,6 +167,7 @@ visualisation_lines = false
 
 [node name="RigidStar" type="Spatial" parent="."]
 transform = Transform( 0.375747, 0, 0, 0, 0.375747, 0, 0, 0, 0.375747, 8.12822, -4.64018, 0 )
+visible = false
 script = ExtResource( 2 )
 geometry/visual_mesh = ExtResource( 1 )
 mechanical/physics_object = true
@@ -181,7 +180,7 @@ visual/texture = "None"
 
 [node name="SofaSlidingConstraint" type="Spatial" parent="."]
 transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+visible = false
 script = ExtResource( 10 )
 object_1 = NodePath("../RigidStar")
-two_point_attachment = false
 relative_attachment_1 = 0.5

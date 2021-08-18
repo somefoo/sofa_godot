@@ -8,8 +8,7 @@ const SofaUtility = preload("res://addons/sofa_scene_creator/sofa_utility.gd")
 
 
 
-export var object_1 : NodePath
-export var object_2 : NodePath
+export var object : NodePath
 
 export var line_start : Vector3 = Vector3(0,0,0)
 export var line_end : Vector3 = Vector3(10,0,0)
@@ -113,8 +112,8 @@ func _enter_tree():
 
 func get_xml_tree():
 	#TODO remove hard coded "dofs" name?
-	var o1 = SofaUtility.get_sofa_absolute_name(get_node(object_1))
-	#if(!SofaUtility.is_valid_sofa_rigid_object(get_node(object_1))):
+	var o1 = SofaUtility.get_sofa_absolute_name(get_node(object))
+	#if(!SofaUtility.is_valid_sofa_rigid_object(get_node(object))):
 	#	assert(false, "Error: object in an sliding constraint must be Rigid Bodies (SOFA limitation)") # because SOFA doesn't like Rigidbodies
 	
 	
@@ -122,18 +121,18 @@ func get_xml_tree():
 	var roi_root = xml_tree_constraint.get_root()
 	roi_root.add_properties({"name":get_name()})
 	if(_two_point_attachment):
-		var between_point1 = (line_start*(_relative_attachment_1) + line_end * (1-_relative_attachment_1)) - get_node(object_1).translation
-		var between_point2 = (line_start*(_relative_attachment_2) + line_end * (1-_relative_attachment_2)) - get_node(object_1).translation
+		var between_point1 = (line_start*(_relative_attachment_1) + line_end * (1-_relative_attachment_1)) - get_node(object).translation
+		var between_point2 = (line_start*(_relative_attachment_2) + line_end * (1-_relative_attachment_2)) - get_node(object).translation
 		var position_string : String = ""
 		position_string = str(between_point1[0]) + " " + str(between_point1[1]) + " " + str(between_point1[2]) + '&#x09;' + str(between_point2[0]) + " " + str(between_point2[1]) + " " + str(between_point2[2])
 		roi_root.add_child("MechanicalObject").add_properties({"name":"points", "template":"Vec3d", "position":position_string})
 		roi_root.add_child("RigidMapping")
 	else:
 		var between_point = (line_start*(_relative_attachment_1) + line_end * (1-_relative_attachment_1))
-		roi_root.add_child("MechanicalObject").add_properties({"name":"points", "template":"Vec3d", "position":(between_point - get_node(object_1).translation)})
+		roi_root.add_child("MechanicalObject").add_properties({"name":"points", "template":"Vec3d", "position":(between_point - get_node(object).translation)})
 		roi_root.add_child("RigidMapping")
 	
-	SofaUtility.add_requirement(get_node(object_1), xml_tree_constraint)
+	SofaUtility.add_requirement(get_node(object), xml_tree_constraint)
 	
 	#var o1d = o1 + "/dofs"
 	#var o2d = o2 + "/dofs"
@@ -176,12 +175,12 @@ func get_xml_tree():
 	return xml_tree
 
 func _process(delta):
-	if(!object_1.is_empty()):
+	if(!object.is_empty()):
 		if(_two_point_attachment):
-			SofaUtility.draw_line(self, (line_start*(_relative_attachment_1) + line_end * (1-_relative_attachment_1)), get_node(object_1).translation, SofaUtility.COLOR_TARGET_OBJECT)
-			SofaUtility.draw_line(self, (line_start*(_relative_attachment_2) + line_end * (1-_relative_attachment_2)), get_node(object_1).translation, SofaUtility.COLOR_TARGET_OBJECT)
+			SofaUtility.draw_line(self, (line_start*(_relative_attachment_1) + line_end * (1-_relative_attachment_1)), get_node(object).translation, SofaUtility.COLOR_TARGET_OBJECT)
+			SofaUtility.draw_line(self, (line_start*(_relative_attachment_2) + line_end * (1-_relative_attachment_2)), get_node(object).translation, SofaUtility.COLOR_TARGET_OBJECT)
 		else:
-			SofaUtility.draw_line(self, (line_start*(_relative_attachment_1) + line_end * (1-_relative_attachment_1)), get_node(object_1).translation, SofaUtility.COLOR_TARGET_OBJECT)
+			SofaUtility.draw_line(self, (line_start*(_relative_attachment_1) + line_end * (1-_relative_attachment_1)), get_node(object).translation, SofaUtility.COLOR_TARGET_OBJECT)
 	SofaUtility.draw_cross(self, line_start, SofaUtility.COLOR_PURPLE)
 	SofaUtility.draw_cross(self, line_end, SofaUtility.COLOR_PURPLE)
 	SofaUtility.draw_line(self, line_start + Vector3(0,0.03,0), line_end + Vector3(0,0.03,0), SofaUtility.COLOR_PURPLE)
@@ -196,5 +195,5 @@ func _process(delta):
 		pass
 	
 	scale = Vector3(0,0,0)
-	#translation = Vector3(0,0,0)
+	translation = Vector3(0,0,0)
 	rotation = Vector3(0,0,0)

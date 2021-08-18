@@ -1,0 +1,138 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://meshes/cube.obj" type="ArrayMesh" id=1]
+[ext_resource path="res://addons/sofa_scene_creator/sofa_object.gd" type="Script" id=2]
+[ext_resource path="res://addons/sofa_scene_creator/sofa_root.gd" type="Script" id=3]
+[ext_resource path="res://addons/sofa_scene_creator/sofa_aa_box_roi.gd" type="Script" id=4]
+[ext_resource path="res://addons/sofa_scene_creator/sofa_fixed_constraint.gd" type="Script" id=5]
+[ext_resource path="res://meshes/rope_holder.obj" type="ArrayMesh" id=6]
+
+[node name="SofaRoot" type="Node"]
+script = ExtResource( 3 )
+sofa_binary_path = "/home/pit/repos/sofa/build/v2006/bin/runSofa"
+gmsh_binary_path = "/usr/bin/gmsh"
+ctmconv_binary_path = "/usr/bin/ctmconv"
+
+[node name="BasePost" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 15, 0, 0, 0 )
+script = ExtResource( 2 )
+geometry/visual_mesh = ExtResource( 1 )
+mechanical/physics_object = true
+mechanical/physics_object_properties/movable = false
+mechanical/physics_object_properties/mass = 1.0
+mechanical/physics_object_properties/soft_body = false
+mechanical/physics_object_properties/rigid_body_properties/carving_tool = false
+visual/color = Color( 0.5, 0.5, 0.5, 1 )
+visual/texture = "None"
+
+[node name="LeftPost" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, 10, 0, -1, -4.37114e-07, 0, 10.9116, 11 )
+script = ExtResource( 2 )
+geometry/visual_mesh = ExtResource( 1 )
+mechanical/physics_object = true
+mechanical/physics_object_properties/movable = false
+mechanical/physics_object_properties/mass = 1.0
+mechanical/physics_object_properties/soft_body = false
+mechanical/physics_object_properties/rigid_body_properties/carving_tool = false
+visual/color = Color( 0.5, 0.5, 0.5, 1 )
+visual/texture = "None"
+
+[node name="RightPost" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, 10, 0, -1, -4.37114e-07, 0, 10.9116, -11 )
+script = ExtResource( 2 )
+geometry/visual_mesh = ExtResource( 1 )
+mechanical/physics_object = true
+mechanical/physics_object_properties/movable = false
+mechanical/physics_object_properties/mass = 1.0
+mechanical/physics_object_properties/soft_body = false
+mechanical/physics_object_properties/rigid_body_properties/carving_tool = false
+visual/color = Color( 0.5, 0.5, 0.5, 1 )
+visual/texture = "None"
+
+[node name="Rope" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.999018, 0.0442994, 0, -0.0442994, 0.999018, 0, 5.16722, 0 )
+script = ExtResource( 2 )
+geometry/visual_mesh = ExtResource( 6 )
+mechanical/physics_object = true
+mechanical/physics_object_properties/movable = true
+mechanical/physics_object_properties/mass = 1.0
+mechanical/physics_object_properties/soft_body = true
+mechanical/physics_object_properties/soft_body_properties/carving_surface = true
+mechanical/physics_object_properties/soft_body_properties/poisson_ratio = 0.4
+mechanical/physics_object_properties/soft_body_properties/youngs_modulus = 30000.0
+visual/color = Color( 0, 0.00784314, 0.415686, 1 )
+visual/texture = "None"
+
+[node name="Rope2" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.99801, -0.0630518, 0, 0.0630518, 0.99801, 0, 11, 0 )
+script = ExtResource( 2 )
+geometry/visual_mesh = ExtResource( 6 )
+mechanical/physics_object = true
+mechanical/physics_object_properties/movable = true
+mechanical/physics_object_properties/mass = 1.0
+mechanical/physics_object_properties/soft_body = true
+mechanical/physics_object_properties/soft_body_properties/carving_surface = true
+mechanical/physics_object_properties/soft_body_properties/poisson_ratio = 0.4
+mechanical/physics_object_properties/soft_body_properties/youngs_modulus = 10000.0
+visual/color = Color( 0, 1, 1, 1 )
+visual/texture = "None"
+
+[node name="Rope3" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.996749, 0.0805643, 0, -0.0805643, 0.996749, 0, 14, 0 )
+script = ExtResource( 2 )
+geometry/visual_mesh = ExtResource( 6 )
+mechanical/physics_object = true
+mechanical/physics_object_properties/movable = true
+mechanical/physics_object_properties/mass = 1.0
+mechanical/physics_object_properties/soft_body = true
+mechanical/physics_object_properties/soft_body_properties/carving_surface = true
+mechanical/physics_object_properties/soft_body_properties/poisson_ratio = 0.4
+mechanical/physics_object_properties/soft_body_properties/youngs_modulus = 15000.0
+visual/color = Color( 0, 0.576471, 1, 1 )
+visual/texture = "None"
+
+[node name="Rope4" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.997538, -0.0701221, 0, 0.0701221, 0.997538, 0, 18, 0 )
+script = ExtResource( 2 )
+geometry/visual_mesh = ExtResource( 6 )
+mechanical/physics_object = true
+mechanical/physics_object_properties/movable = true
+mechanical/physics_object_properties/mass = 1.0
+mechanical/physics_object_properties/soft_body = true
+mechanical/physics_object_properties/soft_body_properties/carving_surface = true
+mechanical/physics_object_properties/soft_body_properties/poisson_ratio = 0.4
+mechanical/physics_object_properties/soft_body_properties/youngs_modulus = 2000.0
+visual/color = Color( 0, 0.0156863, 1, 1 )
+visual/texture = "None"
+
+[node name="SofaAABoxROILeft" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 12, 0, 0, 0, 1, 0, 10, 11 )
+script = ExtResource( 4 )
+
+[node name="SofaAABoxROIRight" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 12, 0, 0, 0, 1, 0, 9.72195, -11 )
+script = ExtResource( 4 )
+
+[node name="SofaFixedConstraintLeft" type="Spatial" parent="."]
+transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+script = ExtResource( 5 )
+region_of_interest = NodePath("../SofaAABoxROILeft")
+targets = [ NodePath("../Rope"), NodePath("../Rope2"), NodePath("../Rope3"), NodePath("../Rope4") ]
+
+[node name="SofaFixedConstraintRight" type="Spatial" parent="."]
+transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+script = ExtResource( 5 )
+region_of_interest = NodePath("../SofaAABoxROIRight")
+targets = [ NodePath("../Rope"), NodePath("../Rope2"), NodePath("../Rope3"), NodePath("../Rope4") ]
+
+[node name="Knife" type="Spatial" parent="."]
+transform = Transform( -4.37114e-08, 0, 1, -5.59905e-07, -7.2378, -2.44742e-14, 6.40457, -6.32749e-07, 2.79953e-07, 0, 25.4326, 0 )
+script = ExtResource( 2 )
+geometry/visual_mesh = ExtResource( 6 )
+mechanical/physics_object = true
+mechanical/physics_object_properties/movable = true
+mechanical/physics_object_properties/mass = 1.0
+mechanical/physics_object_properties/soft_body = false
+mechanical/physics_object_properties/rigid_body_properties/carving_tool = true
+visual/color = Color( 1, 0, 0, 1 )
+visual/texture = "None"

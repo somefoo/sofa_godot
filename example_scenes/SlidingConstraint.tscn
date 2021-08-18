@@ -30,7 +30,7 @@ visual/texture = "None"
 [node name="SofaSlidingConstraint" type="Spatial" parent="."]
 transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
 script = ExtResource( 2 )
-object_1 = NodePath("../RigidStar")
+object = NodePath("../RigidStar")
 relative_attachment_1 = 0.5
 
 [node name="RigidStar2" type="Spatial" parent="."]
@@ -48,7 +48,7 @@ visual/texture = "None"
 [node name="SofaSlidingConstraint2" type="Spatial" parent="."]
 transform = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
 script = ExtResource( 2 )
-object_1 = NodePath("../RigidStar2")
+object = NodePath("../RigidStar2")
 line_start = Vector3( 0, 0, 12 )
 line_end = Vector3( 10, 0, 12 )
 relative_attachment_1 = 0.774

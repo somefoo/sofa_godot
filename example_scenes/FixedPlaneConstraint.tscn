@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://addons/sofa_scene_creator/sofa_object.gd" type="Script" id=1]
+[ext_resource path="res://meshes/star.obj" type="ArrayMesh" id=2]
+[ext_resource path="res://addons/sofa_scene_creator/sofa_fixed_plane_constraint.gd" type="Script" id=3]
+[ext_resource path="res://addons/sofa_scene_creator/sofa_root.gd" type="Script" id=7]
+
+[node name="SofaRoot" type="Node"]
+script = ExtResource( 7 )
+gravity = Vector3( 0, -900, 0 )
+collision_distance = 1.0
+sofa_binary_path = "/home/pit/repos/sofa/build/v2006/bin/runSofa"
+gmsh_binary_path = "/usr/bin/gmsh"
+ctmconv_binary_path = "/usr/bin/ctmconv"
+print_sofa_output = true
+
+[node name="Star" type="Spatial" parent="."]
+transform = Transform( 2.23892, 0, 0, 0, 2.23892, 0, 0, 0, 2.23892, -0.156199, 0.448045, 53.9469 )
+script = ExtResource( 1 )
+geometry/visual_mesh = ExtResource( 2 )
+mechanical/physics_object = true
+mechanical/physics_object_properties/movable = true
+mechanical/physics_object_properties/mass = 1.0
+mechanical/physics_object_properties/soft_body = true
+mechanical/physics_object_properties/soft_body_properties/carving_surface = false
+mechanical/physics_object_properties/soft_body_properties/poisson_ratio = 0.4
+mechanical/physics_object_properties/soft_body_properties/youngs_modulus = 10000.0
+visual/color = Color( 1, 1, 1, 1 )
+visual/texture = "res://icon.png"
+
+[node name="SofaFixedPlaneConstraint" type="Spatial" parent="."]
+transform = Transform( 290.066, 1.35739, -73.7785, -50.8646, 17.7552, -125.798, 57.2229, 8.90163, 262.167, 0.678697, 8.8776, 4.45081 )
+script = ExtResource( 3 )
+targets = [ NodePath("../Star") ]
+distance_max = 19.908
+visualisation_size = 300.0
+visualisation_lines = false
