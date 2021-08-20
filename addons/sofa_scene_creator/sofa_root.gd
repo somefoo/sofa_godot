@@ -11,13 +11,14 @@ export(Vector3) var gravity = Vector3(0,-9.81,0)
 
 
 export(float) var collision_distance = 0.5
+export(float) var time_step = 0.02
 export(String, FILE, GLOBAL) var sofa_binary_path = ""
 export(String, FILE, GLOBAL) var gmsh_binary_path = ""
 export(String, FILE, GLOBAL) var ctmconv_binary_path = ""
 export(bool) var print_sofa_output = false
 export(bool) var print_gmsh_output = false
 export(bool) var print_xml_output = false
-export(float) var time_step = 0.02
+
 
 func _enter_tree():
 	add_child(DebugDraw)
