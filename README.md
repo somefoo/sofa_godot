@@ -27,7 +27,7 @@ OR
 * You can copy the plugin folder (addons/sofa_scene_creator) into your Godot project and [enable](https://docs.godotengine.org/en/stable/tutorials/plugins/editor/installing_plugins.html) the plugin like any other Godot plugin.
 
 ### Using the example scenes
-It is recommended to look at the example scenes (example_scenes/) before creating your own scenes. The **example scenes will not directly work** as the Plugin does not
+It is recommended to look at the example scenes (example_scenes/) before creating your own scenes. The **example scenes will not directly work** as the plugin does not
 know where SOFA and the other applications are installed.
 
 ![Setting the path](addons/sofa_scene_creator/documentation/images/SofaSettingApplicationPaths.gif)
