@@ -126,7 +126,7 @@ Once a new component is created, the plugin has to be informed to load the compo
 
 
 ### Useful components
-#### Visualization tools
+#### Visualization utility functions
 ``` python
 # Draw a line between two positions (Node will usually always be self)
 SofaUtility.draw_line(Node, Vector3, Vector3, Color)
@@ -141,6 +141,10 @@ SofaUtility.draw_cross(Node, Vector3, Color)
 # Example: Draws a purple/pink cross at 'some_position'
 SofaUtility.draw_cross(self, some_position, Color(1.0, 0.0, 1.0, 0.5))
 ```
+As you may have noticed, you have to pass a self reference to the utility function. This is because Godot needs to know in what
+scene instance the visualisation object needs to instantiated. There should be a way to do this without... But no clean 
+way has been found as of yet.
+
 Here are some already, as of writing, defined colors (you can also use your own if wanted):
 ``` python
 const COLOR_TARGET_OBJECT : Color = Color(0.5, 0.5, 0.0, 0.3)
