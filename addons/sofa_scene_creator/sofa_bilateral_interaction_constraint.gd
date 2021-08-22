@@ -5,7 +5,6 @@ const SofaUtility = preload("res://addons/sofa_scene_creator/sofa_utility.gd")
 
 export var object_1 : NodePath
 export var object_2 : NodePath
-#export var attach_distance : float = 0.001
 
 func _enter_tree():
 	pass
@@ -30,9 +29,6 @@ func get_xml_tree():
 	
 	SofaUtility.add_requirement(get_node(object_1), xml_tree_constraint1)
 	SofaUtility.add_requirement(get_node(object_2), xml_tree_constraint2)
-	
-	#var o1d = o1 + "/dofs"
-	#var o2d = o2 + "/dofs"
 
 	var xml_tree = XMLSceneTree.new()
 	var r = xml_tree.get_root()
@@ -44,9 +40,6 @@ func get_xml_tree():
 		"template":"Vec3d",
 		"first_point":"0",
 		"second_point":"0",
-		#"indices1":"@" + self.name+"np" + ".indices1",
-		#"indices2":"@" + self.name+"np" + ".indices2",
-		#"twoWay":"true",
 	})
 	
 	return xml_tree
@@ -57,5 +50,4 @@ func _process(delta):
 		SofaUtility.draw_line(self, translation, get_node(object_2).translation, SofaUtility.COLOR_TARGET_OBJECT)
 	SofaUtility.draw_cross(self, translation, SofaUtility.COLOR_TURQUOISE)
 	scale = Vector3(0,0,0)
-	#translation = Vector3(0,0,0)
 	rotation = Vector3(0,0,0)

@@ -10,13 +10,6 @@ func _enter_tree():
 	pass
 
 func get_xml_tree():
-	
-	#TODO remove hard coded "dofs" name?
-	#TODO impl this correctly now and remove the is_valid stuff above
-
-	
-	
-	
 	var roi = get_node(region_of_interest)
 	assert(SofaUtility.is_valid_sofa_ROI(roi, true), "Error, the ROI select is not a valid ROI.")
 
@@ -32,7 +25,7 @@ func get_xml_tree():
 		SofaUtility.add_requirement(get_node(t), xml_tree_constraint)
 	
 	
-	# No return here, the requirments are post-attached to the target nodes
+	# No return here, the requirments are post-attached/add_requirement to the target nodes
 	return null
 
 func _process(delta):
@@ -43,4 +36,3 @@ func _process(delta):
 	scale = Vector3(0,0,0)
 	translation = Vector3(0,0,0)
 	rotation = Vector3(0,0,0)
-	pass

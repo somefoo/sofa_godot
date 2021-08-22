@@ -30,4 +30,3 @@ func _process(delta):
 	rotation= Vector3(0,0,0)
 	var scale_max = max(scale.x, max(scale.y, scale.z))
 	scale=Vector3(scale_max,scale_max,scale_max)
-	pass

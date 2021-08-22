@@ -17,9 +17,6 @@ func _enter_tree():
 	add_child(preview_visual_mesh)
 
 func get_xml_tree():
-	#var roi = get_node(region_of_interest)
-	#assert(SofaUtility.is_valid_sofa_ROI(roi, true), "Error, the ROI select is not a valid ROI.")
-
 	var s = scale
 	var p = translation
 	var box = [s.x + p.x, s.y + p.y, s.z + p.z, -s.x + p.x, -s.y + p.y, -s.z + p.z]
@@ -31,11 +28,8 @@ func get_xml_tree():
 		var tree = XMLSceneTree.new("BoxConstraint")
 		tree.get_root().add_properties({"name":get_name(),"box":box})
 		SofaUtility.add_requirement(get_node(t), tree)
-	# No return here, the requirments are post-attached to the target nodes
+	# No return here, the requirments are post-attached/add_requirement to the target nodes
 	return null
 
 func _process(delta):
-	#scale = Vector3(0,0,0)
-	#translation = Vector3(0,0,0)
 	rotation = Vector3(0,0,0)
-	pass

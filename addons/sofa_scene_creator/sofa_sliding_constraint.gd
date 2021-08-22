@@ -144,8 +144,6 @@ func get_xml_tree():
 	var position_string : String = ""
 	position_string = str(line_start[0]) + " " + str(line_start[1]) + " " + str(line_start[2]) + '&#x09;' + str(line_end[0]) + " " + str(line_end[1]) + " " + str(line_end[2])
 	
-	#TODO the order of the two created objects below is not correct
-	
 	r.add_child("MechanicalObject").add_properties({
 		"name":"points",
 		"template":"Vec3d",
@@ -160,9 +158,6 @@ func get_xml_tree():
 		"sliding_point":"0",
 		"axis_1":"0",
 		"axis_2":"1",
-		#"indices1":"@" + self.name+"np" + ".indices1",
-		#"indices2":"@" + self.name+"np" + ".indices2",
-		#"twoWay":"true",
 	})
 	
 	

@@ -13,10 +13,8 @@ export(bool) var visualisation_lines = true
 
 var visual_mesh : Mesh = CubeMesh.new()
 var material_red = SpatialMaterial.new()
-#var material_green = SpatialMaterial.new()
 
 func _enter_tree():
-#	add_child(DebugDraw)
 	visual_mesh.size = Vector3(1,1,1)
 	material_red.flags_transparent = true
 	material_red.albedo_color = Color(1.0,0,0,0.2)
@@ -35,7 +33,7 @@ func get_xml_tree():
 		var tree = XMLSceneTree.new("FixedPlaneConstraint")
 		tree.get_root().add_properties({"name":get_name(),"direction":m3.y,"dmin":distance_min,"dmax":distance_max})
 		SofaUtility.add_requirement(get_node(t), tree)
-	# No return here, the requirments are post-attached to the target nodes
+	# No return here, the requirments are post-attached/add_requirement to the target nodes
 	return null
 
 func get_basis() -> Basis:
@@ -65,4 +63,3 @@ func _process(delta):
 	
 	scale = Vector3(visualisation_size,thickness,visualisation_size)
 	translation = Vector3(0,0,0) + m3.y * (distance_min + (thickness / 2))
-	pass
