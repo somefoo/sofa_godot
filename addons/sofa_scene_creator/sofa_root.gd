@@ -2,6 +2,7 @@ tool
 extends Node
 const XMLSceneTree = preload("res://addons/sofa_scene_creator/xml_scene_tree.gd")
 const SofaUtility = preload("res://addons/sofa_scene_creator/sofa_utility.gd")
+const SofaExternalBinary = preload("res://addons/sofa_scene_creator/sofa_external_binary_interface.gd")
 var DebugDraw = preload("res://addons/sofa_scene_creator/debug_draw.gd").new() 
 #enum UNIT {KILOGRAM_METER, KILOGRAM_MILIMETER}
 #export(UNIT) var unit = UNIT.KILOGRAM_MILIMETER
@@ -207,6 +208,11 @@ func find_xml_node_by_path(root : XMLSceneTree.XMLTreeNode, path : String) -> XM
 #[✘] - U+2718
 func _ready():
 	if not Engine.is_editor_hint():
+		###########################
+		#SofaExternalBinary.get_terminal_emulator()
+		var sofa_bin = SofaExternalBinary.find_required_binary("sofa", "", "https://github.com/sofa-framework/sofa/releases/download/v21.06.00/SOFA_v21.06.00_Linux.run")
+		###########################
+		
 		print("Checking tree (root)...")
 		assert(get_tree().get_root().get_children().size() != 0, "Error, you must have at least one root node.") #This can never happen :P
 		assert(get_tree().get_root().get_children().size() == 1, "Error, there are multiple objects in the root, make sure you only have one.") #This may never happen?
@@ -241,23 +247,26 @@ func _ready():
 		file.store_string(xml_string)
 		file.close()
 		
+		#TODO, .run is an installer...
+		sofa_bin.execute(['/tmp/generated_sofa_scene.scn'], true, print_sofa_output)
 		
-		var sofa_binary = File.new()
-		if(sofa_binary.file_exists(sofa_binary_path)):
-			var output = []
-			#Blocking call:
-			var pid = OS.execute(sofa_binary_path, ['/tmp/generated_sofa_scene.scn'], true, output)
-			if(print_sofa_output):
-				print("########## SOFA OUTPUT BEGIN ##########")
-				for line in output:
-					print(line)
-				print("########## SOFA OUTPUT END   ##########")
-			
-		else:
-			print("Sofa path not set correctly, sofa will not be opened.")
-			print("  Set the sofa binary path in the root node.")
+#		var sofa_binary = File.new()
+#		if(sofa_binary.file_exists(sofa_binary_path)):
+#			var output = []
+#			#Blocking call:
+#			var pid = OS.execute(sofa_binary_path, ['/tmp/generated_sofa_scene.scn'], true, output)
+#			if(print_sofa_output):
+#				print("########## SOFA OUTPUT BEGIN ##########")
+#				for line in output:
+#					print(line)
+#				print("########## SOFA OUTPUT END   ##########")
+#
+#		else:
+#			print("Sofa path not set correctly, sofa will not be opened.")
+#			print("  Set the sofa binary path in the root node.")
 		
 		get_tree().quit()
 
 func draw_line(p0, p1, color : Color = Color(1,0,0,1)):
 	DebugDraw.draw_line(p0, p1, color)
+
