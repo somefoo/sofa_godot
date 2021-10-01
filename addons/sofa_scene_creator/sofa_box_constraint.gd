@@ -22,6 +22,7 @@ func get_xml_tree():
 	var box = [s.x + p.x, s.y + p.y, s.z + p.z, -s.x + p.x, -s.y + p.y, -s.z + p.z]
 	
 	for t in targets:
+		if t == "": continue
 		if(!SofaUtility.is_valid_sofa_softbody_object(get_node(t))):
 			assert(false, "Error: objects in a box constraint must be Soft Bodies (PLUGIN limitation)") # because SOFA doesn't like Rigidbodies
 		

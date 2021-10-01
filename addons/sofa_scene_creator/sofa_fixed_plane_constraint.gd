@@ -27,6 +27,7 @@ func get_xml_tree():
 	var m3 = get_basis()
 	
 	for t in targets:
+		if t == "": continue
 		if(!SofaUtility.is_valid_sofa_softbody_object(get_node(t))):
 			assert(false, "Error: objects in a box constraint must be Soft Bodies (PLUGIN limitation)") # because SOFA doesn't like Rigidbodies
 		
@@ -46,6 +47,7 @@ func get_basis() -> Basis:
 
 func _process(delta):
 	for t in targets:
+		if t == "": continue
 		SofaUtility.draw_line(self, translation, get_node(t).translation, SofaUtility.COLOR_TARGET_OBJECT)
 
 	var m3 = get_basis()

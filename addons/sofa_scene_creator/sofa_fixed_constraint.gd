@@ -15,6 +15,7 @@ func get_xml_tree():
 
 	
 	for t in targets:
+		if t == "": continue
 		var xml_tree_constraint = XMLSceneTree.new("FixedConstraint")
 		var roi_root = xml_tree_constraint.get_root()
 		roi_root.add_properties({"name":get_name(), "indices":SofaUtility.get_sofa_absolute_name(get_node(t)) + "/" + roi.get_name() + ".indices"})
@@ -31,6 +32,7 @@ func get_xml_tree():
 func _process(delta):
 	if(region_of_interest != null):
 		for t in targets:
+			if t == "": continue
 			SofaUtility.draw_line(self, get_node(region_of_interest).translation, get_node(t).translation, SofaUtility.COLOR_TARGET_OBJECT)
 	
 	scale = Vector3(0,0,0)
