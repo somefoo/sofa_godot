@@ -59,7 +59,6 @@ Almost all other components will simply interact with SofaObjects as targets, an
 * At the current time, only XML output is supported.
 * The order of objects matters, add the constraints (or anything with a reference to an object) after the SofaObjects. You can re-order using the scene tree visualiser on the left in Godot.
 * Currently, the SOFA required plugins (for example "SofaSimpleFem") are not created as needed. Instead, a fixed selection of plugins are used.
-* Sometimes errors in red will be printed at the bottom when creating constraints with multiple targets, these can be ignored.
 * The plugin understands object hierarchies, but you should not use them at the moment (simply place all objects as a child of the SofaRoot node)
 
 ## How do add more features or components
