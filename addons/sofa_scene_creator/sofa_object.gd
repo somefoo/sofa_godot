@@ -1,6 +1,7 @@
 tool
 extends Spatial
 const XMLSceneTree = preload("res://addons/sofa_scene_creator/xml_scene_tree.gd")
+const SofaExternalBinary = preload("res://addons/sofa_scene_creator/sofa_external_binary_interface.gd")
 
 #export(Array, NodePath) var fixed_constraints
 #export(Array, NodePath) var bidirectional_attach_constraints
@@ -278,22 +279,9 @@ func generate_gmsh_mesh():
 	
 	if(path.substr(len(path) -4, -1) == ".obj"):
 		
+		var ctmconv_bin = SofaExternalBinary.find_required_binary("ctmconv", "openctm-tools")
 		
-		var ctmconv_binary = File.new()
-		if(ctmconv_binary.file_exists(get_tree().root.get_child(0).ctmconv_binary_path)):
-			var output = []
-			#Blocking call:
-			var pid = OS.execute(get_tree().root.get_child(0).ctmconv_binary_path, [path, tmp_3d_file], true, output)
-			if(get_tree().root.get_child(0).print_gmsh_output):
-				print("########## CTMCONV OUTPUT BEGIN ##########")
-				for line in output:
-					print(line)
-				print("########## CTMCONV OUTPUT END   ##########")
-
-		else:
-			print("ctmconv path not set correctly, meshes cannot be generated.")
-			print("  Set the ctmconv binary path in the root node.")
-			print("  [sudo apt install openctm-tools]")
+		ctmconv_bin.execute([path, tmp_3d_file], true, get_tree().root.get_child(0).print_gmsh_output)
 		
 		var file = File.new()
 		file.open(tmp_file, File.WRITE)
@@ -304,22 +292,8 @@ func generate_gmsh_mesh():
 		file.store_string(geo_string)
 		file.close()
 		
-		
-		var gmsh_binary = File.new()
-		if(gmsh_binary.file_exists(get_tree().root.get_child(0).gmsh_binary_path)):
-			var output = []
-			#Blocking call:
-			var pid = OS.execute(get_tree().root.get_child(0).gmsh_binary_path, [tmp_file, '-3', '-o', export_path, '-format', '"msh22"'], true, output)
-			if(get_tree().root.get_child(0).print_gmsh_output):
-				print("########## GMSH OUTPUT BEGIN ##########")
-				for line in output:
-					print(line)
-				print("########## GMSH OUTPUT END   ##########")
-
-		else:
-			print("Gmsh path not set correctly, meshes cannot be generated.")
-			print("  Set the gmsh binary path in the root node.")
-			print("  [sudo apt install gmsh]")
+		var gmsh_bin = SofaExternalBinary.find_required_binary("gmsh", "gmsh")
+		gmsh_bin.execute([tmp_file, '-3', '-o', export_path, '-format', '"msh22"'], true,get_tree().root.get_child(0).print_gmsh_output)
 
 
 

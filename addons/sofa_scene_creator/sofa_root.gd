@@ -13,9 +13,9 @@ export(Vector3) var gravity = Vector3(0,-9.81,0)
 
 export(float) var collision_distance = 0.5
 export(float) var time_step = 0.02
-export(String, FILE, GLOBAL) var sofa_binary_path = ""
-export(String, FILE, GLOBAL) var gmsh_binary_path = ""
-export(String, FILE, GLOBAL) var ctmconv_binary_path = ""
+#export(String, FILE, GLOBAL) var sofa_binary_path = ""
+#export(String, FILE, GLOBAL) var gmsh_binary_path = ""
+#export(String, FILE, GLOBAL) var ctmconv_binary_path = ""
 export(bool) var print_sofa_output = false
 export(bool) var print_gmsh_output = false
 export(bool) var print_xml_output = false
@@ -210,7 +210,11 @@ func _ready():
 	if not Engine.is_editor_hint():
 		###########################
 		#SofaExternalBinary.get_terminal_emulator()
-		var sofa_bin = SofaExternalBinary.find_required_binary("sofa", "", "https://github.com/sofa-framework/sofa/releases/download/v21.06.00/SOFA_v21.06.00_Linux.run")
+		var sofa_bin = SofaExternalBinary.find_required_binary("sofa",
+		 "", 
+		"https://github.com/sofa-framework/sofa/releases/download/v21.06.00/SOFA_v21.06.00_Linux.zip",
+		true,
+		"SOFA_v21.06.00_Linux/bin/runSofa-21.06.00")
 		###########################
 		
 		print("Checking tree (root)...")
@@ -224,10 +228,6 @@ func _ready():
 		
 		explore_subtree(get_tree().get_root())
 		
-		
-		
-		
-		#my_tree
 		#print(my_tree.to_xml())
 		var xml_tree = construct_xml_tree(self)
 		
@@ -246,24 +246,9 @@ func _ready():
 		file.open("/tmp/generated_sofa_scene.scn", File.WRITE)
 		file.store_string(xml_string)
 		file.close()
-		
-		#TODO, .run is an installer...
+
 		sofa_bin.execute(['/tmp/generated_sofa_scene.scn'], true, print_sofa_output)
-		
-#		var sofa_binary = File.new()
-#		if(sofa_binary.file_exists(sofa_binary_path)):
-#			var output = []
-#			#Blocking call:
-#			var pid = OS.execute(sofa_binary_path, ['/tmp/generated_sofa_scene.scn'], true, output)
-#			if(print_sofa_output):
-#				print("########## SOFA OUTPUT BEGIN ##########")
-#				for line in output:
-#					print(line)
-#				print("########## SOFA OUTPUT END   ##########")
-#
-#		else:
-#			print("Sofa path not set correctly, sofa will not be opened.")
-#			print("  Set the sofa binary path in the root node.")
+
 		
 		get_tree().quit()
 
