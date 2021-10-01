@@ -69,7 +69,7 @@ Almost all other components will simply interact with SofaObjects as targets, an
 All SOFA component scripts must start with the name sofa
 (for example: sofa_fixed_constraint.gd, sofa_sphere_roi.gd).
 
-All SOFA ROIs must end with roi
+All SOFA ROIs must contain the string roi
 (sofa_aa_box_roi.gd, sofa_sphere_roi.gd).
 ```
 The standard structure of an additional component is as following:
