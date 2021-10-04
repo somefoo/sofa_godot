@@ -67,16 +67,11 @@ func get_xml_tree():
 	root_tree.add_child(root_tree.get_root(), "DefaultContactManager").add_properties({"name":"Response", "response":"default"})
 	root_tree.add_child(root_tree.get_root(), "NewProximityIntersection").add_properties({"alarmDistance":collision_distance*2, "contactDistance":collision_distance})
 	root_tree.add_child(root_tree.get_root(), "FreeMotionAnimationLoop")
-	root_tree.add_child(root_tree.get_root(), "BruteForceDetection").add_properties({"name":"N2"})
+	root_tree.add_child(root_tree.get_root(), "BVHNarrowPhase")
+	root_tree.add_child(root_tree.get_root(), "BruteForceBroadPhase")
 	root_tree.add_child(root_tree.get_root(), "GenericConstraintSolver").add_properties({"tolerance":0.001, "maxIterations":1000})
 	root_tree.add_child(root_tree.get_root(), "CarvingManager").add_properties({"active":true, "carvingDistance":collision_distance*1.2})
 	
-	
-	
-	
-	#root_tree.add_child(root_tree.get_root(), "DefaultPipeline").add_properties({"name":"CollisionPipeline", "verbose":"0"})
-	#root_tree.add_child(root_tree.get_root(), "BruteForceDetection").add_properties({"name":"N2"})
-	#root_tree.add_child(root_tree.get_root(), "DefaultContactManager").add_properties({"name":"collision response", "response":"default"})
 	return root_tree
 
 # Returns true, as this is the root object
