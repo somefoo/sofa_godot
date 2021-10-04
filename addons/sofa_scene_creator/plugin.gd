@@ -6,7 +6,7 @@ func _enter_tree():
 	add_custom_type("SofaObject", "Spatial", preload("sofa_object.gd"), preload("icons/sofa_object_icon.png"))
 	add_custom_type("SofaRoot", "Node", preload("sofa_root.gd"), preload("icons/sofa_root_icon.png"))
 	add_custom_type("SofaAABoxROI", "Spatial", preload("sofa_aa_box_roi.gd"), preload("icons/sofa_aa_box_roi_icon.png"))
-	add_custom_type("SofaSphereROI", "Spatial", preload("sofa_sphere_roi.gd"), preload("icons/sofa_aa_box_roi_icon.png"))
+	add_custom_type("SofaSphereROI", "Spatial", preload("sofa_sphere_roi.gd"), preload("icons/sofa_aa_sphere_roi_icon.png"))
 	#add_custom_type("SofaPointConstraintTarget", "Spatial", preload("sofa_point_constraint_target.gd"), preload("icons/sofa_point_constraint_target_icon.png"))
 	add_custom_type("SofaFixedConstraint", "Spatial", preload("sofa_fixed_constraint.gd"), preload("icons/sofa_point_constraint_target_icon.png"))
 	add_custom_type("SofaAttachConstraint", "Spatial", preload("sofa_attach_constraint.gd"), preload("icons/sofa_point_constraint_target_icon.png"))
