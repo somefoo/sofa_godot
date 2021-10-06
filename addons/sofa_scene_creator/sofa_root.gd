@@ -210,6 +210,7 @@ func _ready():
 		"https://github.com/sofa-framework/sofa/releases/download/v21.06.00/SOFA_v21.06.00_Linux.zip",
 		true,
 		"SOFA_v21.06.00_Linux/bin/runSofa-21.06.00")
+		SofaExternalBinary.install_distro_package("libopengl0")
 		###########################
 		
 		print("Checking tree (root)...")

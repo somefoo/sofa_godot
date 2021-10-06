@@ -81,6 +81,17 @@ static func _wget_binary(binary : String, wget_location : String = "", zip : boo
 	
 	return ExternalBinary.new(local_binary_path)
 
+
+static func install_distro_package(name):
+
+	# There are issues with using the " symbol in execute
+	# So a chain of greps are used instead
+	var check = 'dpkg -s ' + name + ' 2>/dev/null | grep Status | grep install | grep ok | grep installed'
+	var output = []
+	OS.execute("eval", [check], true, output)
+	if len(output) == 0 || output[0].strip_edges(true,true) != "Status: install ok installed":
+		OS.execute("apturl", ["apt://" + name], true)
+
 # Tries to find a required binary, or install it if it isn't found
 # binary: the name of the binary
 # distribution_package_name: if not found, install using this package name
@@ -106,7 +117,7 @@ static func find_required_binary(binary : String, distribution_package_name : St
 		if distribution_package_name != "":
 			
 			#shell_open is non-blocking :(
-			OS.execute("apturl", ["apt:" + distribution_package_name], true)
+			install_distro_package(distribution_package_name)
 			#OS.shell_open("apt:" + distribution_package_name)
 			assert(OS.execute("which", [binary], true, output) == 0, "Error, could not install required package: " + distribution_package_name)
 			return ExternalBinary.new(output[0])
