@@ -29,7 +29,7 @@ static func _get_local_binary_folder():
 		return absolute_path
 	else:
 		dir.open(project_path)
-		dir.make_dir("folder_name")
+		dir.make_dir(folder_name)
 	
 		# Ensure Godot ignores the content
 		var file = File.new()
