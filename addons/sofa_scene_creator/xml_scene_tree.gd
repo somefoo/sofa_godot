@@ -33,6 +33,28 @@ var _root = null
 func _init(type = "Node"):
 	_root = XMLTreeNode.new(type)
 
+func _value_to_string(property_value):
+		var property_string = ""
+		var iter = [TYPE_INT_ARRAY, TYPE_REAL_ARRAY, TYPE_ARRAY]
+		var cnst = [TYPE_INT, TYPE_REAL, TYPE_STRING, TYPE_BOOL]
+		if typeof(property_value) in iter:
+			for i in property_value: property_string += str(i) + " "
+		elif typeof(property_value) == TYPE_VECTOR2:
+			property_string = str(property_value.x) + " " + str(property_value.y)
+		elif typeof(property_value) == TYPE_VECTOR3:
+			property_string = str(property_value.x) + " " + str(property_value.y) + " " + str(property_value.z)
+		elif typeof(property_value) == TYPE_COLOR:
+			property_string = str(property_value.r) + " " + str(property_value.g) + " " + str(property_value.b) + " " + str(property_value.a)
+		elif typeof(property_value) in cnst:
+			property_string = str(property_value)
+		else:
+			assert(false, "This property is currently not handled(" + str(typeof(property_value)) + "): " + str(property_value))
+		
+		if(typeof(property_value) in cnst && typeof(property_value) != TYPE_STRING):
+			return property_string
+		else:
+			return '"' + property_string + '"'
+
 func clear():
 	_root = null
 
@@ -51,24 +73,7 @@ func to_xml_from_node(node, depth = 0):
 	var properties_string = ""
 	for p in range(0, node._properties.size()):
 		var property_value = node._properties.values()[p]
-		var property_string = ""
-		
-		var iter = [TYPE_INT_ARRAY, TYPE_REAL_ARRAY, TYPE_ARRAY]
-		var cnst = [TYPE_INT, TYPE_REAL, TYPE_STRING, TYPE_BOOL]
-		if typeof(property_value) in iter:
-			for i in property_value: property_string += str(i) + " "
-		elif typeof(property_value) == TYPE_VECTOR2:
-			property_string = str(property_value.x) + " " + str(property_value.y)
-		elif typeof(property_value) == TYPE_VECTOR3:
-			property_string = str(property_value.x) + " " + str(property_value.y) + " " + str(property_value.z)
-		elif typeof(property_value) == TYPE_COLOR:
-			property_string = str(property_value.r) + " " + str(property_value.g) + " " + str(property_value.b) + " " + str(property_value.a)
-		elif typeof(property_value) in cnst:
-			property_string = str(property_value)
-		else:
-			assert(false, "This property is currently not handled(" + str(typeof(property_value)) + "): " + str(property_value))
-			
-		properties_string += node._properties.keys()[p] + '="' + property_string + '" '
+		properties_string += node._properties.keys()[p] + '=' + _value_to_string(property_value) + ' '
 
 
 	var xml_string = ''
@@ -86,34 +91,22 @@ func to_xml_from_node(node, depth = 0):
 
 
 
+
+
 func to_python3():
 	# Do stuff for root only (like the createScene call)
 	var root_content = "def createScene(root_node):\n"
-	var sofa_root = "\treturn SofaRoot\n"
+	for p in range(0, _root._properties.size()):
+		var property_name = _root._properties.keys()[p]
+		var property_value = _value_to_string(_root._properties.values()[p])
+		root_content += "\troot_node." + property_name + ' = ' + str(property_value) + '\n'
+	var sofa_root = "\treturn root_node\n"
 	return root_content + to_python3_from_node("root_node",_root) + sofa_root
 func to_python3_from_node(parent_name,node, depth = 0):
 	var properties_string = ""
 	for p in range(0, node._properties.size()):
 		var property_value = node._properties.values()[p]
-		var property_string = ""
-		
-		var iter = [TYPE_INT_ARRAY, TYPE_REAL_ARRAY, TYPE_ARRAY]
-		var cnst = [TYPE_INT, TYPE_REAL, TYPE_STRING, TYPE_BOOL]
-		if typeof(property_value) in iter:
-			for i in property_value: property_string += str(i) + " "
-		elif typeof(property_value) == TYPE_VECTOR2:
-			property_string = str(property_value.x) + " " + str(property_value.y)
-		elif typeof(property_value) == TYPE_VECTOR3:
-			property_string = str(property_value.x) + " " + str(property_value.y) + " " + str(property_value.z)
-		elif typeof(property_value) == TYPE_COLOR:
-			property_string = str(property_value.r) + " " + str(property_value.g) + " " + str(property_value.b) + " " + str(property_value.a)
-		elif typeof(property_value) in cnst:
-			property_string = str(property_value)
-		else:
-			assert(false, "This property is currently not handled(" + str(typeof(property_value)) + "): " + str(property_value))
-			
-		properties_string += node._properties.keys()[p] + '="' + property_string + '", '
-
+		properties_string += node._properties.keys()[p] + '=' + _value_to_string(property_value) + ', '
 
 	var xml_string = ''
 	var prefix = '\t'.repeat(depth)
@@ -124,10 +117,10 @@ func to_python3_from_node(parent_name,node, depth = 0):
 		if(depth > 0):
 			xml_string += prefix + node._properties["name"] + " = " + parent_name + ".addChild(" + '"' + node._type + '", ' + properties_string + ')'
 			xml_string += '\n'
-			xml_string += prefix + '{\n'
+			xml_string += prefix + 'def add():\n'
 			for child in node._children:
 				xml_string += to_python3_from_node(node._properties["name"],child, depth + 1)
-			xml_string += prefix + '}'
+			xml_string += prefix + 'add()'
 		else:
 			for child in node._children:
 				xml_string += to_python3_from_node(parent_name,child, depth + 1)
