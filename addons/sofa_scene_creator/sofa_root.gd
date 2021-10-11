@@ -248,8 +248,8 @@ func _ready():
 		file2.open("/tmp/generated_sofa_scene.py", File.WRITE)
 		file2.store_string(python_string)
 		file2.close()
-		# TODO Re-enable
-		#sofa_bin.execute(['/tmp/generated_sofa_scene.scn'], true, print_sofa_output)
+		
+		sofa_bin.execute(['/tmp/generated_sofa_scene.scn'], true, print_sofa_output)
 
 		
 		get_tree().quit()
