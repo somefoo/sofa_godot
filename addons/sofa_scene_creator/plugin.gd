@@ -8,12 +8,12 @@ func _enter_tree():
 	add_custom_type("SofaAABoxROI", "Spatial", preload("sofa_aa_box_roi.gd"), preload("icons/sofa_aa_box_roi_icon.png"))
 	add_custom_type("SofaSphereROI", "Spatial", preload("sofa_sphere_roi.gd"), preload("icons/sofa_aa_sphere_roi_icon.png"))
 	#add_custom_type("SofaPointConstraintTarget", "Spatial", preload("sofa_point_constraint_target.gd"), preload("icons/sofa_point_constraint_target_icon.png"))
-	add_custom_type("SofaFixedConstraint", "Spatial", preload("sofa_fixed_constraint.gd"), preload("icons/sofa_point_constraint_target_icon.png"))
-	add_custom_type("SofaAttachConstraint", "Spatial", preload("sofa_attach_constraint.gd"), preload("icons/sofa_point_constraint_target_icon.png"))
-	add_custom_type("SofaBilateralInteractionConstraint", "Spatial", preload("sofa_bilateral_interaction_constraint.gd"), preload("icons/sofa_point_constraint_target_icon.png"))
+	add_custom_type("SofaFixedConstraint", "Spatial", preload("sofa_fixed_constraint.gd"), preload("icons/sofa_fixed_constraint_icon.png"))
+	add_custom_type("SofaAttachConstraint", "Spatial", preload("sofa_attach_constraint.gd"), preload("icons/sofa_attach_constraint_icon.png"))
+	add_custom_type("SofaBilateralInteractionConstraint", "Spatial", preload("sofa_bilateral_interaction_constraint.gd"), preload("icons/sofa_bilateral_interaction_constraint_icon.png"))
 	add_custom_type("SofaBoxConstraint", "Spatial", preload("sofa_box_constraint.gd"), preload("icons/sofa_point_constraint_target_icon.png"))
-	add_custom_type("SofaFixedPlaneConstraint", "Spatial", preload("sofa_fixed_plane_constraint.gd"), preload("icons/sofa_point_constraint_target_icon.png"))
-	add_custom_type("SofaSlidingConstraint", "Spatial", preload("sofa_sliding_constraint.gd"), preload("icons/sofa_point_constraint_target_icon.png"))
+	add_custom_type("SofaFixedPlaneConstraint", "Spatial", preload("sofa_fixed_plane_constraint.gd"), preload("icons/sofa_fixed_plane_constraint_icon.png"))
+	add_custom_type("SofaSlidingConstraint", "Spatial", preload("sofa_sliding_constraint.gd"), preload("icons/sofa_sliding_constraint_icon.png"))
 	
 	pass
 
