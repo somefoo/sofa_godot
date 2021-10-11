@@ -242,8 +242,14 @@ func _ready():
 		file.open("/tmp/generated_sofa_scene.scn", File.WRITE)
 		file.store_string(xml_string)
 		file.close()
-
-		sofa_bin.execute(['/tmp/generated_sofa_scene.scn'], true, print_sofa_output)
+		
+		var python_string = xml_tree.to_python3()
+		var file2 = File.new()
+		file2.open("/tmp/generated_sofa_scene.py", File.WRITE)
+		file2.store_string(python_string)
+		file2.close()
+		# TODO Re-enable
+		#sofa_bin.execute(['/tmp/generated_sofa_scene.scn'], true, print_sofa_output)
 
 		
 		get_tree().quit()

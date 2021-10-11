@@ -85,6 +85,56 @@ func to_xml_from_node(node, depth = 0):
 	return xml_string + '\n'
 
 
+
+func to_python3():
+	# Do stuff for root only (like the createScene call)
+	var root_content = "def createScene(root_node):\n"
+	var sofa_root = "\treturn SofaRoot\n"
+	return root_content + to_python3_from_node("root_node",_root) + sofa_root
+func to_python3_from_node(parent_name,node, depth = 0):
+	var properties_string = ""
+	for p in range(0, node._properties.size()):
+		var property_value = node._properties.values()[p]
+		var property_string = ""
+		
+		var iter = [TYPE_INT_ARRAY, TYPE_REAL_ARRAY, TYPE_ARRAY]
+		var cnst = [TYPE_INT, TYPE_REAL, TYPE_STRING, TYPE_BOOL]
+		if typeof(property_value) in iter:
+			for i in property_value: property_string += str(i) + " "
+		elif typeof(property_value) == TYPE_VECTOR2:
+			property_string = str(property_value.x) + " " + str(property_value.y)
+		elif typeof(property_value) == TYPE_VECTOR3:
+			property_string = str(property_value.x) + " " + str(property_value.y) + " " + str(property_value.z)
+		elif typeof(property_value) == TYPE_COLOR:
+			property_string = str(property_value.r) + " " + str(property_value.g) + " " + str(property_value.b) + " " + str(property_value.a)
+		elif typeof(property_value) in cnst:
+			property_string = str(property_value)
+		else:
+			assert(false, "This property is currently not handled(" + str(typeof(property_value)) + "): " + str(property_value))
+			
+		properties_string += node._properties.keys()[p] + '="' + property_string + '", '
+
+
+	var xml_string = ''
+	var prefix = '\t'.repeat(depth)
+	if(node._children.size() == 0):
+		xml_string += prefix + parent_name + ".addObject(" + '"' + node._type + '", ' + properties_string + ')'
+	else:
+		# Make sure that the root node is not created as a child 
+		if(depth > 0):
+			xml_string += prefix + node._properties["name"] + " = " + parent_name + ".addChild(" + '"' + node._type + '", ' + properties_string + ')'
+			xml_string += '\n'
+			xml_string += prefix + '{\n'
+			for child in node._children:
+				xml_string += to_python3_from_node(node._properties["name"],child, depth + 1)
+			xml_string += prefix + '}'
+		else:
+			for child in node._children:
+				xml_string += to_python3_from_node(parent_name,child, depth + 1)
+			
+	#var xml_string = '<?xml version="1.0" ?>'
+	return xml_string + '\n'
+
 #class_name SofaXMLNode
 
 #var _data = {"___type":"Node"}
