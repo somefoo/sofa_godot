@@ -9,9 +9,6 @@
 
 [node name="SofaRoot" type="Node"]
 script = ExtResource( 3 )
-sofa_binary_path = "/home/pit/repos/sofa/build/v2006/bin/runSofa"
-gmsh_binary_path = "/usr/bin/gmsh"
-ctmconv_binary_path = "/usr/bin/ctmconv"
 
 [node name="BasePost" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 15, 0, 0, 0 )

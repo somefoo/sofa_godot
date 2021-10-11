@@ -12,9 +12,6 @@
 script = ExtResource( 7 )
 gravity = Vector3( 0, -900, 0 )
 collision_distance = 1.0
-sofa_binary_path = "/home/pit/repos/sofa/build/v2006/bin/runSofa"
-gmsh_binary_path = "/usr/bin/gmsh"
-ctmconv_binary_path = "/usr/bin/ctmconv"
 print_sofa_output = true
 
 [node name="SofaSphereROI" type="Spatial" parent="."]
