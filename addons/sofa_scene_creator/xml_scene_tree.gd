@@ -33,18 +33,31 @@ var _root = null
 func _init(type = "Node"):
 	_root = XMLTreeNode.new(type)
 
-func _value_to_string(property_value):
+## property_value: the typed property value, will be converted into
+##                 a sensible string
+## is_variable_assignment: Indicates if the output should be used for a
+##                         direct assignment (like a = [1,2,3])
+##                         or if it is a default XML-like assignment
+##						   a = "1 2 3".
+## We need to differentiate direct assignment from
+## other assignments because lines like:
+## sofa_root_node.gravity = "0, -9.81 0" 
+## are not valid. 
+func _value_to_string(property_value, is_variable_assignment = false):
+		var delimeter = ', ' if is_variable_assignment else ' '
+	
 		var property_string = ""
 		var iter = [TYPE_INT_ARRAY, TYPE_REAL_ARRAY, TYPE_ARRAY]
 		var cnst = [TYPE_INT, TYPE_REAL, TYPE_STRING, TYPE_BOOL]
+		var vect = [TYPE_VECTOR2, TYPE_VECTOR3, TYPE_COLOR]
 		if typeof(property_value) in iter:
-			for i in property_value: property_string += str(i) + " "
+			for i in property_value: property_string += str(i) + delimeter
 		elif typeof(property_value) == TYPE_VECTOR2:
-			property_string = str(property_value.x) + " " + str(property_value.y)
+			property_string = str(property_value.x) + delimeter + str(property_value.y)
 		elif typeof(property_value) == TYPE_VECTOR3:
-			property_string = str(property_value.x) + " " + str(property_value.y) + " " + str(property_value.z)
+			property_string = str(property_value.x) + delimeter + str(property_value.y) + delimeter + str(property_value.z)
 		elif typeof(property_value) == TYPE_COLOR:
-			property_string = str(property_value.r) + " " + str(property_value.g) + " " + str(property_value.b) + " " + str(property_value.a)
+			property_string = str(property_value.r) + delimeter + str(property_value.g) + delimeter + str(property_value.b) + delimeter + str(property_value.a)
 		elif typeof(property_value) in cnst:
 			property_string = str(property_value)
 		else:
@@ -53,6 +66,8 @@ func _value_to_string(property_value):
 		if(typeof(property_value) in cnst && typeof(property_value) != TYPE_STRING):
 			return property_string
 		else:
+			if(is_variable_assignment && typeof(property_value) in iter + vect):
+				return "[" + property_string + "]"
 			return '"' + property_string + '"'
 
 func clear():
@@ -98,7 +113,7 @@ func to_python3():
 	var root_content = "def createScene(root_node):\n"
 	for p in range(0, _root._properties.size()):
 		var property_name = _root._properties.keys()[p]
-		var property_value = _value_to_string(_root._properties.values()[p])
+		var property_value = _value_to_string(_root._properties.values()[p], true)
 		root_content += "\troot_node." + property_name + ' = ' + str(property_value) + '\n'
 	var sofa_root = "\treturn root_node\n"
 	return root_content + to_python3_from_node("root_node",_root) + sofa_root
