@@ -132,13 +132,14 @@ func to_python3_from_node(parent_name,node, depth = 0):
 	else:
 		# Make sure that the root node is not created as a child 
 		if(depth > 0):
+			python_string += '\n'
 			python_string += prefix + node._properties["name"] + " = " + parent_name + ".addChild(" + '"' + node._type + '", ' + properties_string + ')'
 			python_string += '\n'
-			python_string += prefix + 'def add():\n'
+			python_string += prefix + 'def add():' + ' # ' + node._properties["name"]  +  '\n'
 			for child in node._children:
 				#TODO Will _properties["name"] always exist?
 				python_string += to_python3_from_node(node._properties["name"],child, depth + 1)
-			python_string += prefix + 'add()'
+			python_string += prefix + 'add()' + ' # ' + node._properties["name"]
 		else:
 			for child in node._children:
 				python_string += to_python3_from_node(parent_name,child, depth + 1)
