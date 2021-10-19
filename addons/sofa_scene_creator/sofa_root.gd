@@ -13,6 +13,7 @@ export(Vector3) var gravity = Vector3(0,-9.81,0)
 
 export(float) var collision_distance = 0.5
 export(float) var time_step = 0.02
+export(Color) var background_color = Color(0,0,0,1)
 #export(String, FILE, GLOBAL) var sofa_binary_path = ""
 #export(String, FILE, GLOBAL) var gmsh_binary_path = ""
 #export(String, FILE, GLOBAL) var ctmconv_binary_path = ""
@@ -61,7 +62,7 @@ func get_xml_tree():
 	
 	
 	
-	
+	root_tree.add_child(root_tree.get_root(), "BackgroundSetting").add_properties({"color":background_color})
 	root_tree.add_child(root_tree.get_root(), "DefaultPipeline").add_properties({"name":"CollisionPipeline", "verbose":"0", "depth":"6"})
 	root_tree.add_child(root_tree.get_root(), "DefaultCollisionGroupManager")
 	root_tree.add_child(root_tree.get_root(), "DefaultContactManager").add_properties({"name":"Response", "response":"default"})

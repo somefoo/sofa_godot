@@ -17,6 +17,10 @@ _global_script_class_icons={
 config/name="SofaSceneCreator"
 config/icon="res://icon.png"
 
+[display]
+
+window/size/width=600
+
 [editor_plugins]
 
 enabled=PoolStringArray( "res://addons/godot-plugin-refresher/plugin.cfg", "res://addons/sofa_scene_creator/plugin.cfg" )

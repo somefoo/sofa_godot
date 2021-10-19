@@ -56,6 +56,8 @@ func _value_to_string(property_value, is_variable_assignment = false):
 			property_string = str(property_value.x) + delimeter + str(property_value.y)
 		elif typeof(property_value) == TYPE_VECTOR3:
 			property_string = str(property_value.x) + delimeter + str(property_value.y) + delimeter + str(property_value.z)
+		elif typeof(property_value) == TYPE_QUAT:
+			property_string = str(property_value.x) + delimeter + str(property_value.y) + delimeter + str(property_value.z) + delimeter + str(property_value.w)
 		elif typeof(property_value) == TYPE_COLOR:
 			property_string = str(property_value.r) + delimeter + str(property_value.g) + delimeter + str(property_value.b) + delimeter + str(property_value.a)
 		elif typeof(property_value) in cnst:
