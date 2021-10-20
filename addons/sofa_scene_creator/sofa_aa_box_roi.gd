@@ -11,6 +11,7 @@ func _enter_tree():
 	# This creates a red box, which is slightly transparent
 	material.flags_transparent = true
 	material.albedo_color = Color(1.0,0,0,0.2)
+	material.flags_unshaded = true
 	var preview_visual_mesh = MeshInstance.new()
 	visual_mesh.material = material
 	preview_visual_mesh.mesh = visual_mesh
