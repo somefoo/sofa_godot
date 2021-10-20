@@ -21,6 +21,9 @@ export(bool) var print_sofa_output = false
 export(bool) var print_gmsh_output = false
 export(bool) var print_xml_output = false
 
+#showVisual showBehavior showForceFields showInteractionForceFields showCollision showCollisionModels showWireFrame
+export(int, FLAGS, "Visual", "Behavior", "Collision", "Mapping", "WireFrame", "Normals") var sofa_show = 1
+
 
 func _enter_tree():
 	add_child(DebugDraw)
@@ -73,6 +76,17 @@ func get_xml_tree():
 	root_tree.add_child(root_tree.get_root(), "GenericConstraintSolver").add_properties({"tolerance":0.001, "maxIterations":1000})
 	root_tree.add_child(root_tree.get_root(), "CarvingManager").add_properties({"active":true, "carvingDistance":collision_distance*1.2})
 	
+	var display_flags = []
+	if sofa_show & (1 << 0) : display_flags.append("showVisual")
+	if sofa_show & (1 << 1) : display_flags.append("showBehavior")
+	if sofa_show & (1 << 2) : display_flags.append("showCollision")
+	if sofa_show & (1 << 3) : display_flags.append("showMapping")
+	if sofa_show & (1 << 4) : display_flags.append("showWireFrame")
+	if sofa_show & (1 << 5) : display_flags.append("showNormals")
+	
+	root_tree.add_child(root_tree.get_root(), "VisualStyle").add_properties({"displayFlags":display_flags})
+	
+	#<VisualStyle displayFlags=
 	return root_tree
 
 # Returns true, as this is the root object
