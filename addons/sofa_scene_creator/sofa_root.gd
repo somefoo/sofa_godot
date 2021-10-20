@@ -13,7 +13,7 @@ export(Vector3) var gravity = Vector3(0,-9.81,0)
 
 export(float) var collision_distance = 0.5
 export(float) var time_step = 0.02
-export(Color) var background_color = Color(0,0,0,1)
+export(Color) var background_color = Color(0.78,0.78,0.78,1) setget set_background_color
 #export(String, FILE, GLOBAL) var sofa_binary_path = ""
 #export(String, FILE, GLOBAL) var gmsh_binary_path = ""
 #export(String, FILE, GLOBAL) var ctmconv_binary_path = ""
@@ -24,6 +24,9 @@ export(bool) var print_xml_output = false
 #showVisual showBehavior showForceFields showInteractionForceFields showCollision showCollisionModels showWireFrame
 export(int, FLAGS, "Visual", "Behavior", "Collision", "Mapping", "WireFrame", "Normals") var sofa_show = 1
 
+func set_background_color(value):
+	background_color = value
+	#ProjectSettings.set_setting("rendering/environment/default_clear_color", value)
 
 func _enter_tree():
 	add_child(DebugDraw)
@@ -31,6 +34,8 @@ func _enter_tree():
 	if(Engine.is_editor_hint()):
 		ProjectSettings.set_setting("network/limits/debugger_stdout/max_chars_per_second", 2048*100)
 		ProjectSettings.set_setting("network/limits/debugger_stdout/max_messages_per_frame", 10*100)
+		#ProjectSettings.set_setting("rendering/environment/default_clear_color", background_color)
+		#ProjectSettings.set_setting("rendering/environment/default_environment", "")
 		ProjectSettings.save()
 	
 	
@@ -85,7 +90,7 @@ func get_xml_tree():
 	if sofa_show & (1 << 5) : display_flags.append("showNormals")
 	
 	root_tree.add_child(root_tree.get_root(), "VisualStyle").add_properties({"displayFlags":display_flags})
-	
+	root_tree.add_child(root_tree.get_root(), "LightManager").add_properties({"ambient":background_color})
 	#<VisualStyle displayFlags=
 	return root_tree
 

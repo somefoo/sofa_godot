@@ -16,6 +16,7 @@ func _enter_tree():
 	add_custom_type("SofaSlidingConstraint", "Spatial", preload("sofa_sliding_constraint.gd"), preload("icons/sofa_sliding_constraint_icon.png"))
 	add_custom_type("SofaCamera", "Camera", preload("sofa_camera.gd"), preload("icons/sofa_camera_icon.png"))
 	add_custom_type("SofaVisualGrid", "Spatial", preload("sofa_visual_grid.gd"), preload("icons/sofa_visual_grid_icon.png"))
+	add_custom_type("SofaPointlight", "OmniLight", preload("sofa_pointlight.gd"), preload("icons/sofa_pointlight_icon.png"))
 	pass
 
 
@@ -33,4 +34,5 @@ func _exit_tree():
 	remove_custom_type("SofaSlidingConstraint")
 	remove_custom_type("SofaCamera")
 	remove_custom_type("SofaVisualGrid")
+	remove_custom_type("SofaPointlight")
 	pass
