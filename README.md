@@ -1,3 +1,14 @@
+# ⚠️ Project Moved
+
+This project is no longer actively maintained here.
+
+🚀 A newer version is available at: [ScheiklP/sofa_godot](https://github.com/ScheiklP/sofa_godot)
+
+Please visit the updated repository for the latest features, updates, and support.
+
+
+
+
 # Sofa Godot
 Sofa Godot is a tool to create Sofa Scenes (XML for now) in Godot.
 ![Sofa Godot](addons/sofa_scene_creator/documentation/images/SofaGodotExample.gif)
